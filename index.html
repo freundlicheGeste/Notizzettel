@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notiz-Zettel Pro</title>
+    <title>Notiz-Zettel</title>
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -25,14 +25,14 @@
 
         body { font-family: sans-serif; background-color: var(--bg-color); color: var(--text-color); padding: 15px; display: flex; flex-direction: column; align-items: center; transition: all 0.3s ease; }
         
-        /* Exakte Breite wie beim Punkterechner */
+        /* Container mit leichtem Abstand zum Rand */
         .container { 
             background: var(--container-bg); 
             padding: 20px; 
             border-radius: 12px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
             max-width: 400px; 
-            width: 100vw; /* Nutzt volle Breite bis max-width */
+            width: 95%; /* 95% Breite sorgt für den seitlichen Abstand am Handy */
             box-sizing: border-box; 
         }
         
@@ -50,8 +50,8 @@
 
         .btn-save { width: 100%; margin-top: 10px; padding: 15px; background: var(--accent-color); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1em; }
 
-        /* Listen-Container exakt wie Container oben */
-        .list-container { margin-top: 25px; width: 100vw; max-width: 400px; box-sizing: border-box; }
+        /* Listen-Container ebenfalls mit seitlichem Abstand */
+        .list-container { margin-top: 25px; width: 95%; max-width: 400px; box-sizing: border-box; }
         .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
         
         .note-item { 
@@ -67,12 +67,10 @@
             transition: all 0.2s ease;
         }
         
-        /* Sichtbarer Pin-Effekt */
         .note-item.pinned { border-left: 6px solid var(--accent-color); background-color: var(--result-bg); }
         .note-text { font-size: 1em; white-space: pre-wrap; flex-grow: 1; padding-right: 10px; line-height: 1.4; }
         
-        .icon-btn { background: none; border: none; cursor: pointer; font-size: 1.25em; padding: 5px; outline: none; transition: transform 0.1s; }
-        .icon-btn:active { transform: scale(1.2); }
+        .icon-btn { background: none; border: none; cursor: pointer; font-size: 1.25em; padding: 5px; outline: none; }
 
         #scratchpad-mode { display: none; }
         .full-textarea { height: 60vh; margin-top: 10px; }
@@ -83,12 +81,12 @@
 <div class="container" id="main-container">
     <div id="list-mode">
         <div class="header">
-            <h2>Listen-Zettel</h2>
+            <h2>Notiz</h2>
             <div class="top-btns">
-                <button class="small-btn" onclick="exportNotes()">📤</button>
-                <button class="small-btn" onclick="importNotes()">📥</button>
-                <button class="small-btn" onclick="switchMode('scratch')">📝</button>
-                <button class="small-btn" onclick="toggleTheme()">🌓</button>
+                <button class="small-btn" onclick="exportNotes()" title="Export">📤</button>
+                <button class="small-btn" onclick="importNotes()" title="Import">📥</button>
+                <button class="small-btn" onclick="switchMode('scratch')" title="Schmierzettel">📝</button>
+                <button class="small-btn" onclick="toggleTheme()" title="Theme">🌓</button>
             </div>
         </div>
         <textarea id="noteInput" rows="2" placeholder="Neue Notiz..."></textarea>
@@ -99,17 +97,17 @@
         <div class="header">
             <h2>Schmierzettel</h2>
             <div class="top-btns">
-                <button class="small-btn" onclick="switchMode('list')">📋</button>
-                <button class="small-btn" onclick="toggleTheme()">🌓</button>
+                <button class="small-btn" onclick="switchMode('list')" title="Liste">📋</button>
+                <button class="small-btn" onclick="toggleTheme()" title="Theme">🌓</button>
             </div>
         </div>
-        <textarea id="scratchpadInput" class="full-textarea" oninput="saveScratchpad()"></textarea>
+        <textarea id="scratchpadInput" class="full-textarea" placeholder="Hier kannst du schnell alles reinschreiben, was dir einfällt... (wird automatisch gespeichert)" oninput="saveScratchpad()"></textarea>
     </div>
 </div>
 
 <div class="list-container" id="noteListContainer">
     <div class="list-header" id="listHeader" style="display:none;">
-        <h3 style="margin:0;">Deine Liste</h3>
+        <h3 style="margin:0;">Notizsammlung</h3>
         <button class="small-btn" id="sortToggle" onclick="toggleSortMode()">↕️</button>
     </div>
     <div id="noteList"></div>
@@ -144,7 +142,6 @@
         const text = document.getElementById('noteInput').value.trim();
         if (!text) return;
         let notes = JSON.parse(localStorage.getItem('notes')) || [];
-        // Neues Element bekommt Zeitstempel für manuelle Sortierung
         notes.push({ id: Date.now(), text: text, pinned: false, created: Date.now() });
         localStorage.setItem('notes', JSON.stringify(notes));
         document.getElementById('noteInput').value = '';
@@ -170,18 +167,11 @@
         if (notes.length === 0) { document.getElementById('listHeader').style.display = 'none'; list.innerHTML = ''; return; }
         document.getElementById('listHeader').style.display = 'flex';
 
-        // DER PIN-FIX: Radikale Sortierung
         notes.sort((a, b) => {
-            // 1. Priorität: Pinnen (Echte Booleans vergleichen)
             if (a.pinned && !b.pinned) return -1;
             if (!a.pinned && b.pinned) return 1;
-
-            // 2. Priorität: Der gewählte Sortiermodus (nur innerhalb der Pin-Gruppen)
-            if (sortMode === 'alpha') {
-                return a.text.toLowerCase().localeCompare(b.text.toLowerCase());
-            } else {
-                return b.created - a.created; // Neueste oben
-            }
+            if (sortMode === 'alpha') return a.text.toLowerCase().localeCompare(b.text.toLowerCase());
+            return b.created - a.created;
         });
 
         list.innerHTML = '';
