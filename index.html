@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#ff8c00">
+    <link rel="apple-touch-icon" href="icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notiz-Zettel</title>
@@ -23,160 +29,251 @@
             --accent-color: #ffa500;
         }
 
-        body { font-family: sans-serif; background-color: var(--bg-color); color: var(--text-color); padding: 15px; display: flex; flex-direction: column; align-items: center; transition: all 0.3s ease; }
-        
+        body {
+            font-family: sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
         /* Container mit leichtem Abstand zum Rand */
-        .container { 
-            background: var(--container-bg); 
-            padding: 20px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
-            max-width: 400px; 
-            width: 95%; /* 95% Breite sorgt für den seitlichen Abstand am Handy */
-            box-sizing: border-box; 
+        .container {
+            background: var(--container-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 95%;
+            /* 95% Breite sorgt für den seitlichen Abstand am Handy */
+            box-sizing: border-box;
         }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .top-btns { display: flex; gap: 5px; }
-        .small-btn { cursor: pointer; padding: 8px; border-radius: 8px; border: 1px solid var(--input-border); background: var(--result-bg); color: var(--text-color); font-size: 1.1em; line-height: 1; outline: none; }
 
-        textarea { 
-            width: 100%; padding: 12px; border: 1px solid var(--input-border); border-radius: 6px; 
-            box-sizing: border-box; font-size: 16px; background: var(--container-bg); color: var(--text-color);
-            outline: none; transition: border 0.2s; font-family: sans-serif; resize: vertical;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
-        
-        textarea:focus { border: 2px solid var(--accent-color); background-color: var(--result-bg); }
 
-        .btn-save { width: 100%; margin-top: 10px; padding: 15px; background: var(--accent-color); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1em; }
+        .top-btns {
+            display: flex;
+            gap: 5px;
+        }
+
+        .small-btn {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid var(--input-border);
+            background: var(--result-bg);
+            color: var(--text-color);
+            font-size: 1.1em;
+            line-height: 1;
+            outline: none;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background: var(--container-bg);
+            color: var(--text-color);
+            outline: none;
+            transition: border 0.2s;
+            font-family: sans-serif;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            border: 2px solid var(--accent-color);
+            background-color: var(--result-bg);
+        }
+
+        .btn-save {
+            width: 100%;
+            margin-top: 10px;
+            padding: 15px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1em;
+        }
 
         /* Listen-Container ebenfalls mit seitlichem Abstand */
-        .list-container { margin-top: 25px; width: 95%; max-width: 400px; box-sizing: border-box; }
-        .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
-        
-        .note-item { 
-            background: var(--container-bg); 
-            margin-bottom: 10px; 
-            padding: 12px; 
-            border-radius: 8px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+        .list-container {
+            margin-top: 25px;
+            width: 95%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 0 5px;
+        }
+
+        .note-item {
+            background: var(--container-bg);
+            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             border-left: 0 solid var(--accent-color);
             transition: all 0.2s ease;
         }
-        
-        .note-item.pinned { border-left: 6px solid var(--accent-color); background-color: var(--result-bg); }
-        .note-text { font-size: 1em; white-space: pre-wrap; flex-grow: 1; padding-right: 10px; line-height: 1.4; }
-        
-        .icon-btn { background: none; border: none; cursor: pointer; font-size: 1.25em; padding: 5px; outline: none; }
 
-        #scratchpad-mode { display: none; }
-        .full-textarea { height: 60vh; margin-top: 10px; }
+        .note-item.pinned {
+            border-left: 6px solid var(--accent-color);
+            background-color: var(--result-bg);
+        }
+
+        .note-text {
+            font-size: 1em;
+            white-space: pre-wrap;
+            flex-grow: 1;
+            padding-right: 10px;
+            line-height: 1.4;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.25em;
+            padding: 5px;
+            outline: none;
+        }
+
+        #scratchpad-mode {
+            display: none;
+        }
+
+        .full-textarea {
+            height: 60vh;
+            margin-top: 10px;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container" id="main-container">
-    <div id="list-mode">
-        <div class="header">
-            <h2>Notiz</h2>
-            <div class="top-btns">
-                <button class="small-btn" onclick="exportNotes()" title="Export">📤</button>
-                <button class="small-btn" onclick="importNotes()" title="Import">📥</button>
-                <button class="small-btn" onclick="switchMode('scratch')" title="Schmierzettel">📝</button>
-                <button class="small-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+    <div class="container" id="main-container">
+        <div id="list-mode">
+            <div class="header">
+                <h2>Notiz</h2>
+                <div class="top-btns">
+                    <button class="small-btn" onclick="exportNotes()" title="Export">📤</button>
+                    <button class="small-btn" onclick="importNotes()" title="Import">📥</button>
+                    <button class="small-btn" onclick="switchMode('scratch')" title="Schmierzettel">📝</button>
+                    <button class="small-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+                </div>
             </div>
+            <textarea id="noteInput" rows="2" placeholder="Neue Notiz..."></textarea>
+            <button class="btn-save" onclick="saveNote()">Hinzufügen</button>
         </div>
-        <textarea id="noteInput" rows="2" placeholder="Neue Notiz..."></textarea>
-        <button class="btn-save" onclick="saveNote()">Hinzufügen</button>
-    </div>
 
-    <div id="scratchpad-mode">
-        <div class="header">
-            <h2>Schmierzettel</h2>
-            <div class="top-btns">
-                <button class="small-btn" onclick="switchMode('list')" title="Liste">📋</button>
-                <button class="small-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+        <div id="scratchpad-mode">
+            <div class="header">
+                <h2>Schmierzettel</h2>
+                <div class="top-btns">
+                    <button class="small-btn" onclick="switchMode('list')" title="Liste">📋</button>
+                    <button class="small-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+                </div>
             </div>
+            <textarea id="scratchpadInput" class="full-textarea"
+                placeholder="Hier kannst du schnell alles reinschreiben, was dir einfällt... (wird automatisch gespeichert)"
+                oninput="saveScratchpad()"></textarea>
         </div>
-        <textarea id="scratchpadInput" class="full-textarea" placeholder="Hier kannst du schnell alles reinschreiben, was dir einfällt... (wird automatisch gespeichert)" oninput="saveScratchpad()"></textarea>
     </div>
-</div>
 
-<div class="list-container" id="noteListContainer">
-    <div class="list-header" id="listHeader" style="display:none;">
-        <h3 style="margin:0;">Notizsammlung</h3>
-        <button class="small-btn" id="sortToggle" onclick="toggleSortMode()">↕️</button>
+    <div class="list-container" id="noteListContainer">
+        <div class="list-header" id="listHeader" style="display:none;">
+            <h3 style="margin:0;">Notizsammlung</h3>
+            <button class="small-btn" id="sortToggle" onclick="toggleSortMode()">↕️</button>
+        </div>
+        <div id="noteList"></div>
     </div>
-    <div id="noteList"></div>
-</div>
 
-<script>
-    function setTheme(t) { localStorage.setItem('note_theme', t); document.documentElement.setAttribute('data-theme', t); }
-    function toggleTheme() { localStorage.getItem('note_theme') === 'dark' ? setTheme('light') : setTheme('dark'); }
-    if (localStorage.getItem('note_theme') === 'dark') setTheme('dark');
+    <script>
+        function setTheme(t) { localStorage.setItem('note_theme', t); document.documentElement.setAttribute('data-theme', t); }
+        function toggleTheme() { localStorage.getItem('note_theme') === 'dark' ? setTheme('light') : setTheme('dark'); }
+        if (localStorage.getItem('note_theme') === 'dark') setTheme('dark');
 
-    function switchMode(mode) {
-        localStorage.setItem('last_mode', mode);
-        document.getElementById('list-mode').style.display = mode === 'scratch' ? 'none' : 'block';
-        document.getElementById('scratchpad-mode').style.display = mode === 'scratch' ? 'block' : 'none';
-        document.getElementById('noteListContainer').style.display = mode === 'scratch' ? 'none' : 'block';
-        if(mode === 'scratch') {
-            document.getElementById('scratchpadInput').value = localStorage.getItem('scratchpad') || '';
-        } else {
+        function switchMode(mode) {
+            localStorage.setItem('last_mode', mode);
+            document.getElementById('list-mode').style.display = mode === 'scratch' ? 'none' : 'block';
+            document.getElementById('scratchpad-mode').style.display = mode === 'scratch' ? 'block' : 'none';
+            document.getElementById('noteListContainer').style.display = mode === 'scratch' ? 'none' : 'block';
+            if (mode === 'scratch') {
+                document.getElementById('scratchpadInput').value = localStorage.getItem('scratchpad') || '';
+            } else {
+                renderNotes();
+            }
+        }
+
+        function saveScratchpad() { localStorage.setItem('scratchpad', document.getElementById('scratchpadInput').value); }
+
+        function toggleSortMode() {
+            let current = localStorage.getItem('sort_mode') || 'manual';
+            localStorage.setItem('sort_mode', current === 'alpha' ? 'manual' : 'alpha');
             renderNotes();
         }
-    }
 
-    function saveScratchpad() { localStorage.setItem('scratchpad', document.getElementById('scratchpadInput').value); }
+        function saveNote() {
+            const text = document.getElementById('noteInput').value.trim();
+            if (!text) return;
+            let notes = JSON.parse(localStorage.getItem('notes')) || [];
+            notes.push({ id: Date.now(), text: text, pinned: false, created: Date.now() });
+            localStorage.setItem('notes', JSON.stringify(notes));
+            document.getElementById('noteInput').value = '';
+            renderNotes();
+        }
 
-    function toggleSortMode() {
-        let current = localStorage.getItem('sort_mode') || 'manual';
-        localStorage.setItem('sort_mode', current === 'alpha' ? 'manual' : 'alpha');
-        renderNotes();
-    }
+        function togglePin(id) {
+            let notes = JSON.parse(localStorage.getItem('notes')) || [];
+            notes = notes.map(n => {
+                if (n.id === id) n.pinned = !n.pinned;
+                return n;
+            });
+            localStorage.setItem('notes', JSON.stringify(notes));
+            renderNotes();
+        }
 
-    function saveNote() {
-        const text = document.getElementById('noteInput').value.trim();
-        if (!text) return;
-        let notes = JSON.parse(localStorage.getItem('notes')) || [];
-        notes.push({ id: Date.now(), text: text, pinned: false, created: Date.now() });
-        localStorage.setItem('notes', JSON.stringify(notes));
-        document.getElementById('noteInput').value = '';
-        renderNotes();
-    }
+        function renderNotes() {
+            const list = document.getElementById('noteList');
+            const sortMode = localStorage.getItem('sort_mode') || 'manual';
+            document.getElementById('sortToggle').innerText = sortMode === 'alpha' ? '🔤' : '↕️';
 
-    function togglePin(id) {
-        let notes = JSON.parse(localStorage.getItem('notes')) || [];
-        notes = notes.map(n => {
-            if (n.id === id) n.pinned = !n.pinned;
-            return n;
-        });
-        localStorage.setItem('notes', JSON.stringify(notes));
-        renderNotes();
-    }
+            let notes = JSON.parse(localStorage.getItem('notes')) || [];
+            if (notes.length === 0) { document.getElementById('listHeader').style.display = 'none'; list.innerHTML = ''; return; }
+            document.getElementById('listHeader').style.display = 'flex';
 
-    function renderNotes() {
-        const list = document.getElementById('noteList');
-        const sortMode = localStorage.getItem('sort_mode') || 'manual';
-        document.getElementById('sortToggle').innerText = sortMode === 'alpha' ? '🔤' : '↕️';
-        
-        let notes = JSON.parse(localStorage.getItem('notes')) || [];
-        if (notes.length === 0) { document.getElementById('listHeader').style.display = 'none'; list.innerHTML = ''; return; }
-        document.getElementById('listHeader').style.display = 'flex';
+            notes.sort((a, b) => {
+                if (a.pinned && !b.pinned) return -1;
+                if (!a.pinned && b.pinned) return 1;
+                if (sortMode === 'alpha') return a.text.toLowerCase().localeCompare(b.text.toLowerCase());
+                return b.created - a.created;
+            });
 
-        notes.sort((a, b) => {
-            if (a.pinned && !b.pinned) return -1;
-            if (!a.pinned && b.pinned) return 1;
-            if (sortMode === 'alpha') return a.text.toLowerCase().localeCompare(b.text.toLowerCase());
-            return b.created - a.created;
-        });
-
-        list.innerHTML = '';
-        notes.forEach(n => {
-            list.innerHTML += `
+            list.innerHTML = '';
+            notes.forEach(n => {
+                list.innerHTML += `
                 <div class="note-item ${n.pinned ? 'pinned' : ''}">
                     <div class="note-text">${n.text}</div>
                     <div style="display: flex; gap: 8px; align-items: center;">
@@ -185,50 +282,51 @@
                         <button class="icon-btn" onclick="deleteNote(${n.id})">🗑️</button>
                     </div>
                 </div>`;
-        });
-    }
-
-    function deleteNote(id) {
-        let notes = (JSON.parse(localStorage.getItem('notes')) || []).filter(n => n.id !== id);
-        localStorage.setItem('notes', JSON.stringify(notes));
-        renderNotes();
-    }
-
-    function editNote(id) {
-        let notes = JSON.parse(localStorage.getItem('notes')) || [];
-        let n = notes.find(x => x.id === id);
-        if (n) {
-            document.getElementById('noteInput').value = n.text;
-            deleteNote(id);
-            document.getElementById('noteInput').focus();
+            });
         }
-    }
 
-    function exportNotes() {
-        const data = JSON.stringify({ notes: localStorage.getItem('notes'), scratch: localStorage.getItem('scratchpad') });
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(new Blob([data], { type: "application/json" }));
-        a.download = "notiz_backup.json";
-        a.click();
-    }
+        function deleteNote(id) {
+            let notes = (JSON.parse(localStorage.getItem('notes')) || []).filter(n => n.id !== id);
+            localStorage.setItem('notes', JSON.stringify(notes));
+            renderNotes();
+        }
 
-    function importNotes() {
-        const input = document.createElement("input");
-        input.type = "file"; input.accept = ".json";
-        input.onchange = e => {
-            const reader = new FileReader();
-            reader.onload = ev => {
-                const imp = JSON.parse(ev.target.result);
-                localStorage.setItem('notes', imp.notes);
-                localStorage.setItem('scratchpad', imp.scratch);
-                renderNotes();
+        function editNote(id) {
+            let notes = JSON.parse(localStorage.getItem('notes')) || [];
+            let n = notes.find(x => x.id === id);
+            if (n) {
+                document.getElementById('noteInput').value = n.text;
+                deleteNote(id);
+                document.getElementById('noteInput').focus();
+            }
+        }
+
+        function exportNotes() {
+            const data = JSON.stringify({ notes: localStorage.getItem('notes'), scratch: localStorage.getItem('scratchpad') });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(new Blob([data], { type: "application/json" }));
+            a.download = "notiz_backup.json";
+            a.click();
+        }
+
+        function importNotes() {
+            const input = document.createElement("input");
+            input.type = "file"; input.accept = ".json";
+            input.onchange = e => {
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    const imp = JSON.parse(ev.target.result);
+                    localStorage.setItem('notes', imp.notes);
+                    localStorage.setItem('scratchpad', imp.scratch);
+                    renderNotes();
+                };
+                reader.readAsText(e.target.files[0]);
             };
-            reader.readAsText(e.target.files[0]);
-        };
-        input.click();
-    }
+            input.click();
+        }
 
-    window.onload = () => switchMode(localStorage.getItem('last_mode') || 'list');
-</script>
+        window.onload = () => switchMode(localStorage.getItem('last_mode') || 'list');
+    </script>
 </body>
+
 </html>
