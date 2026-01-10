@@ -2,55 +2,82 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notiz-Zettel Pro</title>
     <style>
-        :root { --bg-color: #f4f4f9; --container-bg: #ffffff; --text-color: #333333; --input-border: #cccccc; --result-bg: #fff5e6; --accent-color: #ff8c00; }
-        [data-theme="dark"] { --bg-color: #121212; --container-bg: #1e1e1e; --text-color: #f4f4f4; --input-border: #444444; --result-bg: #2d1f10; --accent-color: #ffa500; }
+        :root {
+            --bg-color: #f4f4f9;
+            --container-bg: #ffffff;
+            --text-color: #333333;
+            --input-border: #cccccc;
+            --result-bg: #fff5e6;
+            --accent-color: #ff8c00;
+        }
 
-        body { font-family: sans-serif; background-color: var(--bg-color); color: var(--text-color); padding: 15px; display: flex; flex-direction: column; align-items: center; transition: all 0.3s ease; overflow-x: hidden; }
-        .container { background: var(--container-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); max-width: 400px; width: 100%; box-sizing: border-box; z-index: 10; }
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-color: #f4f4f4;
+            --input-border: #444444;
+            --result-bg: #2d1f10;
+            --accent-color: #ffa500;
+        }
+
+        body { font-family: sans-serif; background-color: var(--bg-color); color: var(--text-color); padding: 15px; display: flex; flex-direction: column; align-items: center; transition: all 0.3s ease; }
+        
+        .container { 
+            background: var(--container-bg); 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+            max-width: 400px; 
+            width: 100%; 
+            box-sizing: border-box; 
+        }
         
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .top-btns { display: flex; gap: 5px; }
         .small-btn { cursor: pointer; padding: 8px; border-radius: 8px; border: 1px solid var(--input-border); background: var(--result-bg); color: var(--text-color); font-size: 1.1em; line-height: 1; outline: none; }
 
-        textarea { width: 100%; padding: 12px; border: 1px solid var(--input-border); border-radius: 6px; box-sizing: border-box; font-size: 16px; background: var(--container-bg); color: var(--text-color); outline: none; transition: border 0.2s; font-family: sans-serif; resize: none; }
+        textarea { 
+            width: 100%; padding: 12px; border: 1px solid var(--input-border); border-radius: 6px; 
+            box-sizing: border-box; font-size: 16px; background: var(--container-bg); color: var(--text-color);
+            outline: none; transition: border 0.2s; font-family: sans-serif; resize: vertical;
+        }
+        
         textarea:focus { border: 2px solid var(--accent-color); background-color: var(--result-bg); }
 
-        .btn-save { width: 100%; margin-top: 10px; padding: 15px; background: var(--accent-color); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .btn-save { width: 100%; margin-top: 10px; padding: 15px; background: var(--accent-color); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1em; }
 
-        /* Listen-Design */
         .list-container { margin-top: 25px; width: 100%; max-width: 400px; }
-        .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; min-height: 45px; }
+        .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
         
-        /* Swipe & Notiz Styling */
-        .note-wrapper { position: relative; margin-bottom: 10px; overflow: hidden; border-radius: 8px; touch-action: pan-y; }
-        
-        .swipe-action { position: absolute; top: 0; bottom: 0; width: 100%; display: flex; align-items: center; color: white; font-weight: bold; font-size: 1.2em; padding: 0 20px; border-radius: 8px; }
-        .swipe-left { background: #007bff; justify-content: flex-start; } /* Edit */
-        .swipe-right { background: #ff4444; justify-content: flex-end; }  /* Delete */
-
         .note-item { 
-            position: relative; background: var(--container-bg); padding: 15px; display: flex; 
-            justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
-            z-index: 2; transition: transform 0.2s ease, background 0.2s; border-left: 0 solid var(--accent-color);
-            user-select: none; -webkit-user-select: none;
+            background: var(--container-bg); 
+            margin-bottom: 10px; 
+            padding: 12px; 
+            border-radius: 8px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+            border-left: 0 solid var(--accent-color);
+            transition: border 0.2s ease;
         }
-        .note-item.pinned { border-left-width: 6px; }
-        .note-item.selected { background: var(--result-bg); border: 2px solid var(--accent-color); }
-
-        .note-text { font-size: 1em; white-space: pre-wrap; flex-grow: 1; line-height: 1.4; pointer-events: none; }
         
-        .icon-btn { background: none; border: none; cursor: pointer; font-size: 1.2em; padding: 5px; outline: none; }
+        .note-item.pinned { border-left: 6px solid var(--accent-color); }
+        .note-text { font-size: 1em; white-space: pre-wrap; flex-grow: 1; padding-right: 10px; line-height: 1.4; }
+        
+        .icon-btn { background: none; border: none; cursor: pointer; font-size: 1.25em; padding: 5px; outline: none; filter: grayscale(30%); transition: transform 0.1s; }
+        .icon-btn:active { transform: scale(1.2); }
 
         #scratchpad-mode { display: none; }
-        .full-textarea { height: 60vh; }
+        .full-textarea { height: 60vh; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="main-container">
     <div id="list-mode">
         <div class="header">
             <h2>Listen-Zettel</h2>
@@ -66,30 +93,26 @@
     </div>
 
     <div id="scratchpad-mode">
-        <div class="header"><h2>Schmierzettel</h2><button class="small-btn" onclick="switchMode('list')">📋</button></div>
-        <textarea id="scratchpadInput" class="full-textarea" oninput="saveScratchpad()"></textarea>
+        <div class="header">
+            <h2>Schmierzettel</h2>
+            <div class="top-btns">
+                <button class="small-btn" onclick="switchMode('list')">📋</button>
+                <button class="small-btn" onclick="toggleTheme()">🌓</button>
+            </div>
+        </div>
+        <textarea id="scratchpadInput" class="full-textarea" placeholder="Schreibe hier..." oninput="saveScratchpad()"></textarea>
     </div>
 </div>
 
-<div class="list-container">
+<div class="list-container" id="noteListContainer">
     <div class="list-header" id="listHeader" style="display:none;">
-        <h3 id="list-title">Deine Liste</h3>
-        <div id="multi-tools" style="display:none; gap: 5px;">
-            <button class="small-btn" onclick="moveSelected(-1)">🔼</button>
-            <button class="small-btn" onclick="moveSelected(1)">🔽</button>
-            <button class="small-btn" style="background:#ff4444; color:white;" onclick="deleteSelected()">🗑️</button>
-        </div>
+        <h3 style="margin:0;">Deine Liste</h3>
         <button class="small-btn" id="sortToggle" onclick="toggleSortMode()">🔤</button>
     </div>
     <div id="noteList"></div>
 </div>
 
 <script>
-    let selectedId = null;
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let currentSwipeItem = null;
-
     function setTheme(t) { localStorage.setItem('note_theme', t); document.documentElement.setAttribute('data-theme', t); }
     function toggleTheme() { localStorage.getItem('note_theme') === 'dark' ? setTheme('light') : setTheme('dark'); }
     if (localStorage.getItem('note_theme') === 'dark') setTheme('dark');
@@ -98,6 +121,7 @@
         localStorage.setItem('last_mode', mode);
         document.getElementById('list-mode').style.display = mode === 'scratch' ? 'none' : 'block';
         document.getElementById('scratchpad-mode').style.display = mode === 'scratch' ? 'block' : 'none';
+        document.getElementById('noteListContainer').style.display = mode === 'scratch' ? 'none' : 'block';
         if(mode === 'scratch') document.getElementById('scratchpadInput').value = localStorage.getItem('scratchpad') || '';
         else renderNotes();
     }
@@ -105,7 +129,8 @@
     function saveScratchpad() { localStorage.setItem('scratchpad', document.getElementById('scratchpadInput').value); }
 
     function toggleSortMode() {
-        localStorage.setItem('sort_mode', localStorage.getItem('sort_mode') === 'alpha' ? 'manual' : 'alpha');
+        let current = localStorage.getItem('sort_mode') || 'manual';
+        localStorage.setItem('sort_mode', current === 'alpha' ? 'manual' : 'alpha');
         renderNotes();
     }
 
@@ -113,75 +138,10 @@
         const text = document.getElementById('noteInput').value.trim();
         if (!text) return;
         let notes = JSON.parse(localStorage.getItem('notes')) || [];
-        notes.push({ id: Date.now(), text, pinned: false, order: notes.length });
+        notes.push({ id: Date.now(), text: text, pinned: false, created: Date.now() });
         localStorage.setItem('notes', JSON.stringify(notes));
         document.getElementById('noteInput').value = '';
         renderNotes();
-    }
-
-    function renderNotes() {
-        const list = document.getElementById('noteList');
-        const sortMode = localStorage.getItem('sort_mode') || 'manual';
-        document.getElementById('sortToggle').innerText = sortMode === 'alpha' ? '🔤' : '↕️';
-        let notes = JSON.parse(localStorage.getItem('notes')) || [];
-        
-        if (notes.length === 0) { document.getElementById('listHeader').style.display = 'none'; list.innerHTML = ''; return; }
-        document.getElementById('listHeader').style.display = 'flex';
-
-        // Sortierung Fix
-        notes.sort((a, b) => {
-            if (a.pinned !== b.pinned) return b.pinned - a.pinned;
-            if (sortMode === 'alpha') return a.text.toLowerCase().localeCompare(b.text.toLowerCase());
-            return a.order - b.order;
-        });
-
-        list.innerHTML = '';
-        notes.forEach(n => {
-            const isSel = selectedId === n.id;
-            list.innerHTML += `
-                <div class="note-wrapper" ontouchstart="ts(event, ${n.id})" ontouchmove="tm(event)" ontouchend="te(event)">
-                    <div class="swipe-action swipe-left">✏️ Ändern</div>
-                    <div class="swipe-action swipe-right">Löschen 🗑️</div>
-                    <div class="note-item ${n.pinned ? 'pinned' : ''} ${isSel ? 'selected' : ''}" id="note-${n.id}">
-                        <div class="note-text">${n.text}</div>
-                        <button class="icon-btn" onclick="togglePin(${n.id})">${n.pinned ? '📍' : '📌'}</button>
-                    </div>
-                </div>`;
-        });
-        updateMultiTools();
-    }
-
-    // --- SWIPE & SELECTION LOGIC ---
-    function ts(e, id) {
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        currentSwipeItem = document.getElementById('note-' + id);
-        this.holdTimer = setTimeout(() => { selectedId = (selectedId === id ? null : id); renderNotes(); }, 600);
-    }
-
-    function tm(e) {
-        clearTimeout(this.holdTimer);
-        let diffX = e.touches[0].clientX - touchStartX;
-        let diffY = e.touches[0].clientY - touchStartY;
-        if (Math.abs(diffX) > Math.abs(diffY)) {
-            e.preventDefault();
-            currentSwipeItem.style.transform = `translateX(${diffX}px)`;
-        }
-    }
-
-    function te(e) {
-        clearTimeout(this.holdTimer);
-        let diffX = e.changedTouches[0].clientX - touchStartX;
-        currentSwipeItem.style.transform = '';
-        const id = parseInt(currentSwipeItem.id.replace('note-', ''));
-        if (diffX > 100) deleteNote(id);
-        else if (diffX < -100) editNote(id);
-    }
-
-    function updateMultiTools() {
-        const show = selectedId !== null && localStorage.getItem('sort_mode') !== 'alpha';
-        document.getElementById('multi-tools').style.display = selectedId ? 'flex' : 'none';
-        document.getElementById('list-title').style.display = selectedId ? 'none' : 'block';
     }
 
     function togglePin(id) {
@@ -192,10 +152,39 @@
         renderNotes();
     }
 
+    function renderNotes() {
+        const list = document.getElementById('noteList');
+        const sortMode = localStorage.getItem('sort_mode') || 'manual';
+        document.getElementById('sortToggle').innerText = sortMode === 'alpha' ? '🔤' : '↕️';
+        
+        let notes = JSON.parse(localStorage.getItem('notes')) || [];
+        if (notes.length === 0) { document.getElementById('listHeader').style.display = 'none'; list.innerHTML = ''; return; }
+        document.getElementById('listHeader').style.display = 'flex';
+
+        // Strikte Sortierung: Pinned steht IMMER oben
+        notes.sort((a, b) => {
+            if (a.pinned !== b.pinned) return b.pinned ? -1 : 1;
+            if (sortMode === 'alpha') return a.text.toLowerCase().localeCompare(b.text.toLowerCase());
+            return b.created - a.created; // Manuell = Neueste zuerst
+        });
+
+        list.innerHTML = '';
+        notes.forEach(n => {
+            list.innerHTML += `
+                <div class="note-item ${n.pinned ? 'pinned' : ''}">
+                    <div class="note-text">${n.text}</div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button class="icon-btn" onclick="togglePin(${n.id})" title="Anpinnen">${n.pinned ? '📍' : '📌'}</button>
+                        <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern">✏️</button>
+                        <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
+                    </div>
+                </div>`;
+        });
+    }
+
     function deleteNote(id) {
         let notes = JSON.parse(localStorage.getItem('notes')).filter(n => n.id !== id);
         localStorage.setItem('notes', JSON.stringify(notes));
-        if(selectedId === id) selectedId = null;
         renderNotes();
     }
 
@@ -207,24 +196,11 @@
         document.getElementById('noteInput').focus();
     }
 
-    function moveSelected(dir) {
-        if (!selectedId) return;
-        let notes = JSON.parse(localStorage.getItem('notes'));
-        let idx = notes.findIndex(x => x.id === selectedId);
-        if (dir === -1 && idx > 0) [notes[idx], notes[idx-1]] = [notes[idx-1], notes[idx]];
-        if (dir === 1 && idx < notes.length - 1) [notes[idx], notes[idx+1]] = [notes[idx+1], notes[idx]];
-        notes.forEach((n, i) => n.order = i);
-        localStorage.setItem('notes', JSON.stringify(notes));
-        renderNotes();
-    }
-
-    function deleteSelected() { if(selectedId) deleteNote(selectedId); }
-
     function exportNotes() {
         const data = JSON.stringify({ notes: localStorage.getItem('notes'), scratch: localStorage.getItem('scratchpad') });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(new Blob([data], { type: "application/json" }));
-        a.download = "notiz_swipe_backup.json";
+        a.download = "notiz_backup.json";
         a.click();
     }
 
