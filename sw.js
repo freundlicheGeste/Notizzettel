@@ -1,6 +1,6 @@
 const CACHE_NAME = 'app-cache-v1';
 const urlsToCache = [
-  'notizen.html',
+  'index.html',
   'manifest.json'
 ];
 
