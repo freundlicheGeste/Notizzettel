@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notiz Zettel</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f9;
+            --container-bg: #ffffff;
+            --text-color: #333333;
+            --input-border: #cccccc;
+            --result-bg: #fff5e6;
+            --accent-color: #ff8c00;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-color: #f4f4f4;
+            --input-border: #444444;
+            --result-bg: #2d1f10;
+            --accent-color: #ffa500;
+        }
+
+        body {
+            font-family: sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            background: var(--container-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .top-btns {
+            display: flex;
+            gap: 5px;
+        }
+
+        .small-btn {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid var(--input-border);
+            background: var(--result-bg);
+            color: var(--text-color);
+            font-size: 1.1em;
+            line-height: 1;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background: var(--container-bg);
+            color: var(--text-color);
+            outline: none;
+            transition: border 0.2s;
+            font-family: sans-serif;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            border: 2px solid var(--accent-color);
+            background-color: var(--result-bg);
+        }
+
+        .btn-save {
+            width: 100%;
+            margin-top: 10px;
+            padding: 15px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        button:focus {
+            outline: none;
+            border: 2px solid var(--accent-color);
+        }
+
+        .list-container {
+            margin-top: 25px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .note-item {
+            background: var(--container-bg);
+            margin-bottom: 8px;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .note-text {
+            font-size: 1em;
+            white-space: pre-wrap;
+            flex-grow: 1;
+            padding-right: 10px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            padding: 5px;
+        }
+      
+        /* Schmierzettel Modus */
+        #scratchpad-mode {
+            display: none;
+            width: 100%;
+        }
+
+        .full-textarea {
+            height: 60vh;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" id="main-container">
+        <div id="list-mode">
+            <div class="header">
+                <h2 id="title">Notizen</h2>
+                <div class="top-btns">
+                    <button class="small-btn" onclick="exportNotes()" title="Export">📤</button>
+                    <button class="small-btn" onclick="importNotes()" title="Import">📥</button>
+                    <button class="small-btn" onclick="switchMode('scratch')" title="Schmierzettel">📝</button>
+                    <button class="small-btn" onclick="toggleTheme()">🌓</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Neuer Eintrag:</label>
+                <textarea id="noteInput" rows="2" placeholder="Milch, Brot..."></textarea>
+            </div>
+            <button class="btn-save" onclick="saveNote()">Hinzufügen</button>
+
+            <div class="list-container" id="noteList"></div>
+        </div>
+
+        <div id="scratchpad-mode">
+            <div class="header">
+                <h2>Schmierzettel</h2>
+                <div class="top-btns">
+                    <button class="small-btn" onclick="switchMode('list')" title="Zurück zur Liste">📋</button>
+                    <button class="small-btn" onclick="toggleTheme()">🌓</button>
+                </div>
+            </div>
+            <textarea id="scratchpadInput" class="full-textarea" placeholder="Schnelle Gedanken hier festhalten..."
+                oninput="saveScratchpad()"></textarea>
+            <p style="font-size: 0.7em; text-align: center; opacity: 0.6;">Wird automatisch gespeichert...</p>
+        </div>
+    </div>
+
+    <script>
+        // Theme & Initialisierung
+        function setTheme(t) { localStorage.setItem('note_theme', t); document.documentElement.setAttribute('data-theme', t); }
+        function toggleTheme() { localStorage.getItem('note_theme') === 'dark' ? setTheme('light') : setTheme('dark'); }
+        if (localStorage.getItem('note_theme') === 'dark') setTheme('dark');
+
+        // Modus umschalten
+        function switchMode(mode) {
+            if (mode === 'scratch') {
+                document.getElementById('list-mode').style.display = 'none';
+                document.getElementById('scratchpad-mode').style.display = 'block';
+                document.getElementById('scratchpadInput').value = localStorage.getItem('scratchpad') || '';
+            } else {
+                document.getElementById('list-mode').style.display = 'block';
+                document.getElementById('scratchpad-mode').style.display = 'none';
+                renderNotes();
+            }
+        }
+
+        // Schmierzettel Live-Speicher
+        function saveScratchpad() {
+            const text = document.getElementById('scratchpadInput').value;
+            localStorage.setItem('scratchpad', text);
+        }
+
+        // Listen-Logik
+        function saveNote() {
+            const input = document.getElementById('noteInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            let notes = JSON.parse(localStorage.getItem('notes')) || [];
+            notes.push({ id: Date.now(), text: text });
+            localStorage.setItem('notes', JSON.stringify(notes));
+
+            input.value = '';
+            renderNotes();
+        }
+
+        function deleteNote(id) {
+            let notes = JSON.parse(localStorage.getItem('notes')).filter(n => n.id !== id);
+            localStorage.setItem('notes', JSON.stringify(notes));
+            renderNotes();
+        }
+
+        function editNote(id) {
+            let notes = JSON.parse(localStorage.getItem('notes'));
+            const note = notes.find(n => n.id === id);
+            if (note) {
+                document.getElementById('noteInput').value = note.text;
+                deleteNote(id);
+                document.getElementById('noteInput').focus();
+            }
+        }
+
+        function renderNotes() {
+            const list = document.getElementById('noteList');
+            const notes = JSON.parse(localStorage.getItem('notes')) || [];
+            list.innerHTML = '';
+            notes.forEach(n => {
+                list.innerHTML += `
+                <div class="note-item">
+                    <div class="note-text">${n.text}</div>
+                    <div style="display: flex; gap: 5px;">
+                        <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern">✏️</button>
+                        <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
+                    </div>
+                </div>`;
+            });
+        }
+
+        // Export / Import
+        function exportNotes() {
+            const data = JSON.stringify({ notes: localStorage.getItem('notes'), scratch: localStorage.getItem('scratchpad') });
+            const blob = new Blob([data], { type: "application/json" });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "notiz_backup.json";
+            a.click();
+        }
+
+        function importNotes() {
+            const input = document.createElement("input");
+            input.type = "file"; input.accept = ".json";
+            input.onchange = e => {
+                const reader = new FileReader();
+                reader.onload = event => {
+                    const imported = JSON.parse(event.target.result);
+                    if (imported.notes) localStorage.setItem('notes', imported.notes);
+                    if (imported.scratch) localStorage.setItem('scratchpad', imported.scratch);
+                    renderNotes();
+                    alert("Import erfolgreich!");
+                };
+                reader.readAsText(e.target.files[0]);
+            };
+            input.click();
+        }
+
+        window.onload = () => { renderNotes(); };
+    </script>
+</body>
+
+</html>
