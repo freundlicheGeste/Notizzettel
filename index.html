@@ -289,9 +289,9 @@
                 <div class="note-item ${n.pinned ? 'pinned' : ''}">
                     <div class="note-text">${n.text}</div>
                     <div style="display: flex; gap: 8px; align-items: center;">
-                        <button class="icon-btn" onclick="togglePin(${n.id})">${n.pinned ? '📍' : '📌'}</button>
+                        <button class="icon-btn" onclick="togglePin(${n.id})" title="Pinnen">${n.pinned ? '📍' : '📌'}</button>
                         <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern"><span class="mirror-icon">✏️</span></button>
-                        <button class="icon-btn" onclick="deleteNote(${n.id})">🗑️</button>
+                        <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
                     </div>
                 </div>`;
             });
