@@ -1,7 +1,7 @@
 {
   "name": "Notiz-Zettel",
   "short_name": "Notizen",
-  "start_url": "notizen.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#f4f4f9",
   "theme_color": "#ff8c00",
