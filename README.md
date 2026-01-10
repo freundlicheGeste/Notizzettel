@@ -1,16 +1,9 @@
-# My Mobile App Suite 📱
+# Notizzettel 📱
 
-Eine Sammlung von zwei hochoptimierten Web-Apps (PWAs), die speziell für die Nutzung auf Smartphones entwickelt wurden.
+Legt Notizsammlungen an, die chronologisch oder alphabetisch angezeigt werden können.
+Auch ein "Schmierzettel" zum schnellen Speichern von Gedanken ist mit an Bord.
 
-## 🚀 Enthaltene Apps
-
-### 1. Nutri-Score & Punkte-Rechner
-Ein Werkzeug zur schnellen Analyse von Lebensmitteln.
-* **Berechnung:** Ermittlung von Punkten basierend auf Energie, Zucker, Fett und Ballaststoffen.
-* **Favoriten:** Speichern von häufig genutzten Lebensmitteln.
-* **Theming:** Dark- und Light-Mode Unterstützung.
-
-### 2. Notiz-Zettel Pro
+### Funktionen
 Ein flexibler Begleiter für den Alltag und den Einkauf.
 * **Listen-Modus:** Organisierte Einträge mit Editier- und Löschfunktion.
 * **Schmierzettel:** Eine große Textfläche für schnelle Gedanken mit **Auto-Save**.
