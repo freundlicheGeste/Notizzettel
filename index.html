@@ -169,6 +169,12 @@
             height: 60vh;
             margin-top: 10px;
         }
+
+        .mirror-icon {
+            display: inline-block;
+            transform: scaleX(-1);
+            /* Spiegelt das Icon horizontal */
+        }
     </style>
 </head>
 
@@ -284,15 +290,15 @@
                     <div class="note-text">${n.text}</div>
                     <div style="display: flex; gap: 8px; align-items: center;">
                         <button class="icon-btn" onclick="togglePin(${n.id})">${n.pinned ? '📍' : '📌'}</button>
-                        <button class="icon-btn" onclick="editNote(${n.id})">✏️</button>
+                        <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern"><span class="mirror-icon">✏️</span></button>
                         <button class="icon-btn" onclick="deleteNote(${n.id})">🗑️</button>
                     </div>
                 </div>`;
             });
         }
 
-        function deleteNote(id) {
-            if (confirm("Möchtest du diese Notiz wirklich löschen?")) {
+        function deleteNote(id, silent = false) {
+            if (silent || confirm("Möchtest du diese Notiz wirklich löschen?")) {
                 let notes = (JSON.parse(localStorage.getItem('notes')) || []).filter(n => n.id !== id);
                 localStorage.setItem('notes', JSON.stringify(notes));
                 renderNotes();
@@ -304,7 +310,8 @@
             let n = notes.find(x => x.id === id);
             if (n) {
                 document.getElementById('noteInput').value = n.text;
-                deleteNote(id);
+                // Hier rufen wir deleteNote mit "true" auf, damit KEINE Abfrage kommt
+                deleteNote(id, true);
                 document.getElementById('noteInput').focus();
             }
         }
