@@ -25,13 +25,14 @@
 
         body { font-family: sans-serif; background-color: var(--bg-color); color: var(--text-color); padding: 15px; display: flex; flex-direction: column; align-items: center; transition: all 0.3s ease; }
         
+        /* Exakte Breite wie beim Punkterechner */
         .container { 
             background: var(--container-bg); 
             padding: 20px; 
             border-radius: 12px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
             max-width: 400px; 
-            width: 100%; 
+            width: 100vw; /* Nutzt volle Breite bis max-width */
             box-sizing: border-box; 
         }
         
@@ -49,7 +50,8 @@
 
         .btn-save { width: 100%; margin-top: 10px; padding: 15px; background: var(--accent-color); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1em; }
 
-        .list-container { margin-top: 25px; width: 100%; max-width: 400px; }
+        /* Listen-Container exakt wie Container oben */
+        .list-container { margin-top: 25px; width: 100vw; max-width: 400px; box-sizing: border-box; }
         .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
         
         .note-item { 
@@ -62,13 +64,14 @@
             align-items: center; 
             box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
             border-left: 0 solid var(--accent-color);
-            transition: border 0.2s ease;
+            transition: all 0.2s ease;
         }
         
-        .note-item.pinned { border-left: 6px solid var(--accent-color); }
+        /* Sichtbarer Pin-Effekt */
+        .note-item.pinned { border-left: 6px solid var(--accent-color); background-color: var(--result-bg); }
         .note-text { font-size: 1em; white-space: pre-wrap; flex-grow: 1; padding-right: 10px; line-height: 1.4; }
         
-        .icon-btn { background: none; border: none; cursor: pointer; font-size: 1.25em; padding: 5px; outline: none; filter: grayscale(30%); transition: transform 0.1s; }
+        .icon-btn { background: none; border: none; cursor: pointer; font-size: 1.25em; padding: 5px; outline: none; transition: transform 0.1s; }
         .icon-btn:active { transform: scale(1.2); }
 
         #scratchpad-mode { display: none; }
@@ -100,14 +103,14 @@
                 <button class="small-btn" onclick="toggleTheme()">🌓</button>
             </div>
         </div>
-        <textarea id="scratchpadInput" class="full-textarea" placeholder="Schreibe hier..." oninput="saveScratchpad()"></textarea>
+        <textarea id="scratchpadInput" class="full-textarea" oninput="saveScratchpad()"></textarea>
     </div>
 </div>
 
 <div class="list-container" id="noteListContainer">
     <div class="list-header" id="listHeader" style="display:none;">
         <h3 style="margin:0;">Deine Liste</h3>
-        <button class="small-btn" id="sortToggle" onclick="toggleSortMode()">🔤</button>
+        <button class="small-btn" id="sortToggle" onclick="toggleSortMode()">↕️</button>
     </div>
     <div id="noteList"></div>
 </div>
@@ -122,8 +125,11 @@
         document.getElementById('list-mode').style.display = mode === 'scratch' ? 'none' : 'block';
         document.getElementById('scratchpad-mode').style.display = mode === 'scratch' ? 'block' : 'none';
         document.getElementById('noteListContainer').style.display = mode === 'scratch' ? 'none' : 'block';
-        if(mode === 'scratch') document.getElementById('scratchpadInput').value = localStorage.getItem('scratchpad') || '';
-        else renderNotes();
+        if(mode === 'scratch') {
+            document.getElementById('scratchpadInput').value = localStorage.getItem('scratchpad') || '';
+        } else {
+            renderNotes();
+        }
     }
 
     function saveScratchpad() { localStorage.setItem('scratchpad', document.getElementById('scratchpadInput').value); }
@@ -138,6 +144,7 @@
         const text = document.getElementById('noteInput').value.trim();
         if (!text) return;
         let notes = JSON.parse(localStorage.getItem('notes')) || [];
+        // Neues Element bekommt Zeitstempel für manuelle Sortierung
         notes.push({ id: Date.now(), text: text, pinned: false, created: Date.now() });
         localStorage.setItem('notes', JSON.stringify(notes));
         document.getElementById('noteInput').value = '';
@@ -145,9 +152,11 @@
     }
 
     function togglePin(id) {
-        let notes = JSON.parse(localStorage.getItem('notes'));
-        let n = notes.find(x => x.id === id);
-        n.pinned = !n.pinned;
+        let notes = JSON.parse(localStorage.getItem('notes')) || [];
+        notes = notes.map(n => {
+            if (n.id === id) n.pinned = !n.pinned;
+            return n;
+        });
         localStorage.setItem('notes', JSON.stringify(notes));
         renderNotes();
     }
@@ -161,11 +170,18 @@
         if (notes.length === 0) { document.getElementById('listHeader').style.display = 'none'; list.innerHTML = ''; return; }
         document.getElementById('listHeader').style.display = 'flex';
 
-        // Strikte Sortierung: Pinned steht IMMER oben
+        // DER PIN-FIX: Radikale Sortierung
         notes.sort((a, b) => {
-            if (a.pinned !== b.pinned) return b.pinned ? -1 : 1;
-            if (sortMode === 'alpha') return a.text.toLowerCase().localeCompare(b.text.toLowerCase());
-            return b.created - a.created; // Manuell = Neueste zuerst
+            // 1. Priorität: Pinnen (Echte Booleans vergleichen)
+            if (a.pinned && !b.pinned) return -1;
+            if (!a.pinned && b.pinned) return 1;
+
+            // 2. Priorität: Der gewählte Sortiermodus (nur innerhalb der Pin-Gruppen)
+            if (sortMode === 'alpha') {
+                return a.text.toLowerCase().localeCompare(b.text.toLowerCase());
+            } else {
+                return b.created - a.created; // Neueste oben
+            }
         });
 
         list.innerHTML = '';
@@ -174,26 +190,28 @@
                 <div class="note-item ${n.pinned ? 'pinned' : ''}">
                     <div class="note-text">${n.text}</div>
                     <div style="display: flex; gap: 8px; align-items: center;">
-                        <button class="icon-btn" onclick="togglePin(${n.id})" title="Anpinnen">${n.pinned ? '📍' : '📌'}</button>
-                        <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern">✏️</button>
-                        <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
+                        <button class="icon-btn" onclick="togglePin(${n.id})">${n.pinned ? '📍' : '📌'}</button>
+                        <button class="icon-btn" onclick="editNote(${n.id})">✏️</button>
+                        <button class="icon-btn" onclick="deleteNote(${n.id})">🗑️</button>
                     </div>
                 </div>`;
         });
     }
 
     function deleteNote(id) {
-        let notes = JSON.parse(localStorage.getItem('notes')).filter(n => n.id !== id);
+        let notes = (JSON.parse(localStorage.getItem('notes')) || []).filter(n => n.id !== id);
         localStorage.setItem('notes', JSON.stringify(notes));
         renderNotes();
     }
 
     function editNote(id) {
-        let notes = JSON.parse(localStorage.getItem('notes'));
+        let notes = JSON.parse(localStorage.getItem('notes')) || [];
         let n = notes.find(x => x.id === id);
-        document.getElementById('noteInput').value = n.text;
-        deleteNote(id);
-        document.getElementById('noteInput').focus();
+        if (n) {
+            document.getElementById('noteInput').value = n.text;
+            deleteNote(id);
+            document.getElementById('noteInput').focus();
+        }
     }
 
     function exportNotes() {
