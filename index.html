@@ -159,6 +159,11 @@
             flex-grow: 1;
             padding-right: 10px;
             line-height: 1.4;
+            /* --- Sicherheits-Update --- */
+            word-break: break-word;
+            /* Bricht lange Wörter um */
+            overflow-wrap: anywhere;
+            /* Zusätzlicher Schutz für alle Browser */
         }
 
         .icon-btn {
@@ -189,6 +194,11 @@
 
 <body>
 
+    <div
+        style="max-width: 400px; width: 99%; display: flex; justify-content: flex-end; margin-bottom: 5px; margin-right: 5px;">
+        <span id="versionDisplay" style="font-size: 0.75em; color: #888; font-family: sans-serif;"></span>
+    </div>
+
     <div class="container" id="main-container">
         <div id="list-mode">
             <div class="header">
@@ -206,6 +216,9 @@
                 </div>
             </div>
             <textarea id="noteInput" rows="2" placeholder="Neue Notiz..."></textarea>
+            <div id="markdownHint" style="font-size: 0.7em; opacity: 0.6; margin-top: 4px; padding-left: 5px;">
+                Basics: **fett** | *kursiv* | ~~durch~~ | - Liste
+            </div>
             <button class="btn-save" onclick="saveNote()">Hinzufügen</button>
         </div>
 
@@ -218,7 +231,7 @@
                 </div>
             </div>
             <textarea id="scratchpadInput" class="full-textarea"
-                placeholder="Hier kannst du schnell alles reinschreiben, was dir einfällt... (wird automatisch gespeichert)"
+                placeholder="Gedanken-Deponie: Schreib es auf, bevor es wieder wegläuft! 🏃💨  (Speichert automatisch)"
                 oninput="saveScratchpad()"></textarea>
         </div>
     </div>
@@ -232,11 +245,41 @@
     </div>
 
     <script>
+        const APP_VERSION = "v1.0.1";
+
+        const CHANGELOG = {
+            "v1.0.1": "NEU: Markdown Basics für Notizen",
+            "v1.0.0": "Auto-Save für Schmierzettel"
+        };
+
+        function checkUpdate() {
+            const lastVersion = localStorage.getItem('note_app_version');
+
+            // Version anzeigen
+            document.getElementById('versionDisplay').innerText = APP_VERSION;
+
+            if (lastVersion !== APP_VERSION) {
+                const nachricht = CHANGELOG[APP_VERSION] || "Ein neues Update ist verfügbar!";
+
+                setTimeout(() => {
+                    alert(`Update auf ${APP_VERSION}\n\n${nachricht}`);
+                    localStorage.setItem('note_app_version', APP_VERSION);
+                }, 500);
+            }
+        }
+
         function setTheme(t) { localStorage.setItem('note_theme', t); document.documentElement.setAttribute('data-theme', t); }
         function toggleTheme() { localStorage.getItem('note_theme') === 'dark' ? setTheme('light') : setTheme('dark'); }
         if (localStorage.getItem('note_theme') === 'dark') setTheme('dark');
 
         function switchMode(mode) {
+            // Falls man gerade editiert und den Modus wechselt: Abbruch des Editiermodus
+            currentEditId = null;
+            if (document.querySelector('.btn-save')) {
+                document.querySelector('.btn-save').innerText = "Hinzufügen";
+            }
+            document.getElementById('noteInput').value = '';
+
             localStorage.setItem('last_mode', mode);
             document.getElementById('list-mode').style.display = mode === 'scratch' ? 'none' : 'block';
             document.getElementById('scratchpad-mode').style.display = mode === 'scratch' ? 'block' : 'none';
@@ -256,16 +299,6 @@
             renderNotes();
         }
 
-        function saveNote() {
-            const text = document.getElementById('noteInput').value.trim();
-            if (!text) return;
-            let notes = JSON.parse(localStorage.getItem('notes')) || [];
-            notes.push({ id: Date.now(), text: text, pinned: false, created: Date.now() });
-            localStorage.setItem('notes', JSON.stringify(notes));
-            document.getElementById('noteInput').value = '';
-            renderNotes();
-        }
-
         function togglePin(id) {
             let notes = JSON.parse(localStorage.getItem('notes')) || [];
             notes = notes.map(n => {
@@ -282,7 +315,11 @@
             document.getElementById('sortToggle').innerText = sortMode === 'alpha' ? '🔤' : '↕️';
 
             let notes = JSON.parse(localStorage.getItem('notes')) || [];
-            if (notes.length === 0) { document.getElementById('listHeader').style.display = 'none'; list.innerHTML = ''; return; }
+            if (notes.length === 0) {
+                document.getElementById('listHeader').style.display = 'none';
+                list.innerHTML = '';
+                return;
+            }
             document.getElementById('listHeader').style.display = 'flex';
 
             notes.sort((a, b) => {
@@ -294,15 +331,33 @@
 
             list.innerHTML = '';
             notes.forEach(n => {
-                list.innerHTML += `
-                <div class="note-item ${n.pinned ? 'pinned' : ''}">
-                    <div class="note-text">${n.text}</div>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <button class="icon-btn" onclick="togglePin(${n.id})" title="Pinnen">${n.pinned ? '📍' : '📌'}</button>
-                        <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern"><span class="mirror-icon">✏️</span></button>
-                        <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
-                    </div>
-                </div>`;
+                // 1. XSS-Schutz: HTML-Tags unschädlich machen
+                let safeText = n.text
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;");
+
+                // 2. Markdown Basics (Regex)
+                safeText = safeText
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')   // Fett
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')               // Kursiv
+                    .replace(/~~(.*?)~~/g, '<del>$1</del>')             // Durchgestrichen
+                    .replace(/^- (.*)/gm, '• $1');                      // Aufzählungspunkte
+
+                // 3. Erhält Zeilenumbrüche beim Anzeigen
+                safeText = safeText.replace(/\n/g, '<br>');
+
+                const card = document.createElement('div');
+                card.className = `note-item ${n.pinned ? 'pinned' : ''}`;
+                card.innerHTML = `
+            <div class="note-text">${safeText}</div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="icon-btn" onclick="togglePin(${n.id})" title="Pinnen">${n.pinned ? '📍' : '📌'}</button>
+                <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern"><span class="mirror-icon">✏️</span></button>
+                <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
+            </div>
+        `;
+                list.appendChild(card);
             });
         }
 
@@ -314,23 +369,71 @@
             }
         }
 
+        let currentEditId = null; // Neue globale Variable
+
         function editNote(id) {
             let notes = JSON.parse(localStorage.getItem('notes')) || [];
             let n = notes.find(x => x.id === id);
             if (n) {
                 document.getElementById('noteInput').value = n.text;
-                // Hier rufen wir deleteNote mit "true" auf, damit KEINE Abfrage kommt
-                deleteNote(id, true);
+                currentEditId = id; // Wir merken uns, dass wir gerade editieren
+                document.querySelector('.btn-save').innerText = "Änderung speichern";
                 document.getElementById('noteInput').focus();
+                // Wir löschen hier noch NICHTS!
             }
         }
 
+        function saveNote() {
+            const text = document.getElementById('noteInput').value.trim();
+            if (!text) return;
+
+            let notes = JSON.parse(localStorage.getItem('notes')) || [];
+
+            if (currentEditId) {
+                // Wenn wir editieren, ersetzen wir den alten Eintrag
+                notes = notes.map(n => n.id === currentEditId ? { ...n, text: text } : n);
+                currentEditId = null;
+                document.querySelector('.btn-save').innerText = "Hinzufügen";
+            } else {
+                // Normales Hinzufügen
+                notes.push({ id: Date.now(), text: text, pinned: false, created: Date.now() });
+            }
+
+            localStorage.setItem('notes', JSON.stringify(notes));
+            document.getElementById('noteInput').value = '';
+            renderNotes();
+            
+            document.getElementById('markdownHint').style.display = 'block'; // Hint wieder zeigen
+            document.activeElement.blur(); // Tastatur am Handy einklappen
+        }
+
         function exportNotes() {
-            const data = JSON.stringify({ notes: localStorage.getItem('notes'), scratch: localStorage.getItem('scratchpad') });
+            const jetzt = new Date();
+            const pad = (n) => String(n).padStart(2, '0');
+            const ts = `${jetzt.getFullYear()}-${pad(jetzt.getMonth() + 1)}-${pad(jetzt.getDate())}_${pad(jetzt.getHours())}-${pad(jetzt.getMinutes())}-${pad(jetzt.getSeconds())}`;
+
+            // Wir parsen die Daten erst, um sie dann sauber in ein neues Objekt zu verpacken
+            const notesData = JSON.parse(localStorage.getItem('notes') || '[]');
+            const scratchData = localStorage.getItem('scratchpad') || '';
+
+            const dataObj = {
+                notes: notesData,
+                scratch: scratchData,
+                exportDate: ts
+            };
+
+            const dataStr = JSON.stringify(dataObj, null, 2); // null, 2 für bessere Lesbarkeit der Datei
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+
             const a = document.createElement("a");
-            a.href = URL.createObjectURL(new Blob([data], { type: "application/json" }));
-            a.download = "notiz_backup.json";
+            a.href = url;
+            a.download = `notizzettel_backup_${ts}.json`;
+
+            document.body.appendChild(a);
             a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         function importNotes() {
@@ -339,21 +442,51 @@
             input.onchange = e => {
                 const reader = new FileReader();
                 reader.onload = ev => {
-                    const imp = JSON.parse(ev.target.result);
-                    localStorage.setItem('notes', imp.notes);
-                    localStorage.setItem('scratchpad', imp.scratch);
-                    renderNotes();
+                    try {
+                        const imp = JSON.parse(ev.target.result);
+                        // Kompatibilität: Falls 'notes' ein Objekt/Array ist, in String wandeln
+                        const notesToStore = typeof imp.notes === 'string' ? imp.notes : JSON.stringify(imp.notes);
+
+                        localStorage.setItem('notes', notesToStore);
+                        localStorage.setItem('scratchpad', imp.scratch || '');
+                        renderNotes();
+                        alert("Import erfolgreich!");
+                    } catch (err) {
+                        alert("Fehler beim Import!");
+                    }
                 };
                 reader.readAsText(e.target.files[0]);
             };
             input.click();
         }
 
-        window.onload = () => switchMode(localStorage.getItem('last_mode') || 'list');
+        function setRandomPlaceholder() {
+            const placeholders = [
+                "Raus mit der Sprache! Dein Gehirn braucht den Platz für Wichtigeres... (Speichert von selbst)",
+                "Hier abladen: Geistesblitze, Einkaufslisten oder Weltherrschaftspläne... ⚡",
+                "Schreib es auf, bevor es wieder wegläuft! 🏃💨",
+                "Dein digitales Gedächtnis protokolliert... Tipp einfach drauf los! ✍️",
+                "Gedanken-Deponie. Schreib alles rein, ich merke es mir... 🧠",
+                "Quick-Notes: Kein Format-Zwang, einfach nur Text. 📝"
+            ];
+
+            const randomIndex = Math.floor(Math.random() * placeholders.length);
+            const input = document.getElementById('scratchpadInput');
+            if (input) {
+                input.placeholder = placeholders[randomIndex];
+            }
+        }
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js');
         }
+
+        window.onload = () => {
+            switchMode(localStorage.getItem('last_mode') || 'list');
+            setRandomPlaceholder();
+            checkUpdate();
+        };
+
     </script>
 </body>
 
