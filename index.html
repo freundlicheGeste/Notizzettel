@@ -66,14 +66,24 @@
 
         .small-btn {
             cursor: pointer;
-            padding: 8px;
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
             border-radius: 8px;
             border: 1px solid var(--input-border);
             background: var(--result-bg);
             color: var(--text-color);
             font-size: 1.1em;
-            line-height: 1;
             outline: none;
+            transition: transform 0.1s active;
+        }
+
+        .small-btn:active {
+            transform: scale(0.95);
         }
 
         textarea {
