@@ -68,7 +68,6 @@
         #main-container,
         .search-wrapper,
         .list-container,
-        .toast,
         div[style*="max-width: 400px"] {
             /* Erfasst auch den Versions-Header */
             width: 100% !important;
@@ -103,6 +102,7 @@
             align-items: center;
             transition: all 0.3s ease;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .container {
@@ -266,6 +266,9 @@
             font-size: 0.75em;
             opacity: 0.5;
             font-family: monospace;
+            line-height: 1.1;
+            /* Engerer Zeilenabstand für Datum/Zeit */
+            text-align: left;
         }
 
         .note-text {
@@ -422,11 +425,12 @@
             z-index: 2000;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             font-size: 0.95em;
-            width: 90%;
-            max-width: 380px;
             white-space: pre-line;
             text-align: center;
             overflow: hidden;
+            max-width: 380px !important;
+            width: 70%;
+            box-sizing: border-box;
             border-radius: calc(var(--radius) * 1.5);
         }
 
@@ -546,7 +550,8 @@
             left: 10px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 1.8em;
+            font-size: 1.7em;
+            margin-right: 5px;
         }
 
         .dev-console-input.unlocked {
@@ -555,26 +560,6 @@
         }
 
         /* 10. ANIMATIONEN & EASTER EGGS */
-        .slide-out {
-            animation: slideOutLeft 0.4s forwards;
-            pointer-events: none;
-            /* Verhindert Mehrfachklicks während Animation */
-        }
-
-        @keyframes slideOutLeft {
-            0% {
-                transform: translateX(0);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateX(-100%);
-                opacity: 0;
-                margin-bottom: -60px;
-                /* Lässt nachfolgende Notizen sanft hochwandern */
-            }
-        }
-
         @keyframes shake-red {
 
             0%,
@@ -936,28 +921,27 @@
             const index = notes.findIndex(n => n.id === id);
 
             if (index !== -1) {
-                // 1. Visuelle Animation starten (400ms laut deinem CSS)
-                if (card) {
-                    card.classList.add('slide-out');
-                }
+                // Notiz aus dem Speicher entfernen
+                notes.splice(index, 1);
+                localStorage.setItem('notes', JSON.stringify(notes));
+                renderNotes();
 
-                // 2. Kurz warten, bis die Notiz aus dem Bild geglitten ist
-                setTimeout(() => {
-                    // Notiz aus dem Speicher entfernen
-                    notes.splice(index, 1);
-                    localStorage.setItem('notes', JSON.stringify(notes));
+                // 3. Toast mit Rückgängig-Funktion anzeigen
+                showToast("🗑️ Notiz gelöscht", "Rückgängig", () => {
+                    // Notiz wiederherstellen
+                    let currentNotes = JSON.parse(localStorage.getItem('notes')) || [];
+
+                    // An originaler Position (index) wieder einfügen
+                    currentNotes.splice(index, 0, noteToDelete);
+
+                    localStorage.setItem('notes', JSON.stringify(currentNotes));
                     renderNotes();
 
-                    // 3. Toast mit Rückgängig-Funktion anzeigen
-                    showToast("🗑️ Notiz gelöscht", "Rückgängig", () => {
-                        // Notiz wiederherstellen
-                        let currentNotes = JSON.parse(localStorage.getItem('notes')) || [];
-                        currentNotes.push(noteToDelete);
-                        localStorage.setItem('notes', JSON.stringify(currentNotes));
-                        renderNotes();
-                        showToast("Wiederhergestellt!");
-                    });
-                }, 400); // 400ms passt zur CSS-Animation
+                    // Kleiner Timeout, damit der Browser merkt, dass ein NEUER Toast kommt
+                    setTimeout(() => {
+                        showToast("✅ Wiederhergestellt!");
+                    }, 100);
+                });
             }
         }
 
@@ -1070,10 +1054,17 @@
         `;
                 } else {
                     // Normal: Header mit Datum & Buttons oben, Text darunter
-                    const dateStr = new Date(n.id).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+                    const dateStr = new Date(n.id);
+                    // Formatierung: YYYY-MM-DD
+                    const datePart = dateStr.getFullYear() + '-' +
+                        String(dateStr.getMonth() + 1).padStart(2, '0') + '-' +
+                        String(dateStr.getDate()).padStart(2, '0');
+                    const timePart = String(dateStr.getHours()).padStart(2, '0') + ':' +
+                        String(dateStr.getMinutes()).padStart(2, '0');
+
                     card.innerHTML = `
             <div class="note-actions">
-                <div class="note-date">${dateStr}</div>
+                <div class="note-date">${datePart}<br>${timePart}</div>
                 <div class="action-btns">
                     <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern"><span class="mirror-icon">✏️</span></button>
                 <button class="icon-btn" onclick="togglePin(${n.id})" title="${n.pinned ? 'Pin lösen' : 'Anpinnen'}">${n.pinned ? '📍' : '📌'}</button>
@@ -1298,7 +1289,7 @@
 
             clearTimeout(toastTimeout);
 
-            // HTML oder Text setzen
+            // HTML oder Text setzen // <br>, <small>
             if (message.includes('<span') || message.includes('<div')) textSpan.innerHTML = message;
             else textSpan.innerText = message;
 
@@ -1447,12 +1438,14 @@
                         renderNotes();
 
                         // 7. Detailliertes Feedback im Toast
-                        let toastMsg = `<strong style="display:block; margin-bottom:4px;">Import abgeschlossen</strong>`;
-                        toastMsg += `📥 ${addedCount} neue Notizen`;
+                        let toastMsg = `<div style="text-align:center;">`;
+                        toastMsg += `<strong style="display:block; margin-bottom:10px; color:var(--accent-color);">Import abgeschlossen</strong>`;
+                        toastMsg += `<span style="font-size:1em;">📥 ${addedCount} neue Notizen</span>`;
 
                         if (skippedCount > 0) {
-                            toastMsg += `<br><span style="opacity:0.8; font-size:0.9em;">⏩ ${skippedCount} Duplikate ignoriert</span>`;
+                            toastMsg += `<div style="opacity:0.7; font-size:0.85em; margin-top:4px;">⏩ ${skippedCount} Duplikate ignoriert</div>`;
                         }
+                        toastMsg += `</div>`;
 
                         showToast(toastMsg);
 
@@ -1622,9 +1615,9 @@
                 case 'info': return cmdInfo();
                 case 'logs': return cmdLogs();
                 case 'help': return cmdHelp();
-                case 'cls': showToast("Konsole bereit."); return true;
+                case 'cls': return cmdCls();
                 case 'lock': lockConsole(); showToast("Konsole gesperrt"); return true;
-                case 'reset': if (confirm("Alles löschen?")) { localStorage.clear(); location.reload(); } return true;
+                case 'reset': return cmdReset();
 
                 // --- TOOLS ---
                 case 'test': return cmdTest();
@@ -1635,6 +1628,9 @@
 
                 // --- EASTER EGG ---
                 case 'matrix': return cmdMatrix();
+
+                // --- NEU ---
+                case 'storage': return cmdStorage();
 
                 default:
                     showToast("Unbekannter Befehl: " + cmd);
@@ -1647,6 +1643,7 @@
             const notesCount = (JSON.parse(localStorage.getItem('notes')) || []).length;
             const currentTheme = localStorage.getItem('note_theme') || 'light';
             const lastMode = localStorage.getItem('last_mode') || 'list';
+            const isSearchActive = localStorage.getItem('search_active') === 'true';
 
             const infoHTML = `
         <span class="toast-title">ℹ️ System Info</span>
@@ -1655,9 +1652,15 @@
             <b style="color:var(--accent-color)">Version:</b> <span>${APP_VERSION}</span>
             <b style="color:var(--accent-color)">Notizen:</b> <span>${notesCount}</span>
             <b style="color:var(--accent-color)">Theme:</b> <span>${currentTheme}</span>
-            <b style="color:var(--accent-color)">Start-Modus:</b> <span>${lastMode}</span>
+            <b style="color:var(--accent-color)">Suche bei Start:</b> <span>${isSearchActive ? "✅ Aktiv" : "❌ Inaktiv"}</span>
+            <b style="color:var(--accent-color)">Modus bei Start:</b> <span>${lastMode}</span>
         </div>`;
-            showToast(infoHTML, "OK");
+            showToast(infoHTML, "OK", () => { // Diese Aktion wird ausgeführt, wenn OK geklickt wird
+                setTimeout(() => {
+                    const input = document.getElementById('devConsole');
+                    if (input) input.focus();
+                }, 100); // 100ms Puffer für hideToast()
+            });
             return true;
         }
 
@@ -1665,12 +1668,17 @@
             let logHTML = `<span class="toast-title">📜 Versionsverlauf</span><hr class="toast-divider">`;
             Object.keys(CHANGELOG).sort().reverse().forEach(ver => {
                 logHTML += `
-            <div style="margin-bottom: 8px;">
+            <div style="margin-bottom: 5px;">
                 <div style="font-size: 1.2em; font-weight: bold; color: var(--accent-color);">${ver}</div>
                 <div style="font-size: 0.9em; opacity: 0.8;">${CHANGELOG[ver]}</div>
             </div>`;
             });
-            showToast(logHTML, "OK");
+            showToast(logHTML, "OK", () => { // Diese Aktion wird ausgeführt, wenn OK geklickt wird
+                setTimeout(() => {
+                    const input = document.getElementById('devConsole');
+                    if (input) input.focus();
+                }, 100); // 100ms Puffer für hideToast()
+            });
             return true;
         }
 
@@ -1684,7 +1692,39 @@
             <b style="color:var(--accent-color)">Design:</b> nord, dark, light
         </div>
         <div style="font-size:0.7em; margin-top:5px; opacity:0.4;">Psst: Versuch mal 'matrix'...</div>
-    `, "OK");
+    `, "OK", () => { // Diese Aktion wird ausgeführt, wenn OK geklickt wird
+                setTimeout(() => {
+                    const input = document.getElementById('devConsole');
+                    if (input) input.focus();
+                }, 100); // 100ms Puffer für hideToast()
+            });
+            return true;
+        }
+
+        function cmdCls() {
+            const quotes = [
+                "🛸 Cockpit gereinigt...",
+                "✨ Sternenstaub weggewischt...",
+                "🧹 System-Cache weggezaubert!",
+                "🚀 Bereit für den nächsten Sprung."
+            ];
+            const quote = quotes[Math.floor(Math.random() * quotes.length)];
+
+            // Die Konsole leeren (Placeholder oder UI-Reset falls vorhanden)
+            document.getElementById('devConsole').value = "";
+
+            // Kleiner visueller Effekt (Icon-Animation im Input)
+            const icon = document.getElementById('consoleIcon');
+            if (icon) {
+                icon.innerText = "🚀";
+                icon.classList.add('floating'); // Deine CSS Klasse nutzen!
+                setTimeout(() => {
+                    icon.innerText = isConsoleUnlocked ? "🔓" : "🔒";
+                    icon.classList.remove('floating');
+                }, 2000);
+            }
+
+            showToast(quote);
             return true;
         }
 
@@ -1756,14 +1796,63 @@
         }
 
         function cmdTest() {
-            const testText = `### 🚀 Markdown Test\n- [ ] Offene Aufgabe\n- [x] Erledigt\n> Testzitat`;
+            const testNote = `### 🚀 Markdown Test
+Dies ist eine automatisch generierte Test-Notiz.
+- [ ] Offene Aufgabe
+- [x] Erledigte Aufgabe
+- Liste Punkt 1
+- Liste Punkt 2
+
+> "Das ist ein Zitat-Block für wichtige Gedanken."
+
+---
+**Fett**, *Kursiv* und ~~Durchgestrichen~~ funktioniert auch!`;
+
             let notes = JSON.parse(localStorage.getItem('notes')) || [];
-            notes.push({ id: Date.now(), text: testText, pinned: true, created: Date.now() });
+            notes.unshift({
+                id: Date.now(),
+                text: testNote,
+                pinned: true,
+                created: Date.now()
+            });
             localStorage.setItem('notes', JSON.stringify(notes));
             renderNotes();
             showToast("🚀 Test-Notiz erstellt!");
-            return false;
+            return true;
         }
+
+        function cmdReset() {
+            showToast(
+                "<span>⚠️ Werkseinstellungen?</span><br><small>Alle Notizen & Einstellungen werden gelöscht.</small>",
+                "ABBRECHEN", null,
+                "RESET", () => {
+                    localStorage.clear();
+                    location.reload();
+                }
+            );
+            return true;
+        }
+
+        function cmdStorage() {
+    const keys = Object.keys(localStorage);
+    const raw = JSON.stringify(localStorage);
+    const sizeKB = (raw.length * 2 / 1024).toFixed(2);
+    
+    let keyList = keys.map(k => `<code style="color:var(--accent-color)">${k}</code>`).join(", ");
+
+    showToast(`
+        <span class="toast-title">💾 Speicher-Analyse</span>
+        <hr class="toast-divider">
+        <div style="text-align: left; font-size: 0.8em;">
+            <b>Belegt:</b> ${sizeKB} KB / 5000 KB<br>
+            <b>Einträge:</b> ${keys.length}<br>
+            <div style="margin-top:5px; line-height:1.4;"><b>Keys:</b> ${keyList}</div>
+        </div>
+    `, "OK", () => {
+        setTimeout(() => document.getElementById('devConsole').focus(), 100);
+    });
+    return true;
+}
 
 
 
