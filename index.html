@@ -27,6 +27,8 @@
             --quote-bg: rgba(0, 0, 0, 0.05);
             --quote-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.1), 1px 1px 2px rgba(255, 255, 255, 0.1);
             --app-max-width: 400px;
+            --radius: 6px;
+            /* (*1,5 .dev-menu-container, .toast, container) (/2 .note-text blockquote)*/
         }
 
         [data-theme="dark"] {
@@ -84,6 +86,13 @@
             outline: none !important;
         }
 
+        /* 1. GLOBALE BUTTON-REAKTION (Feedback für alle) */
+        button:active {
+            transform: scale(0.96);
+            opacity: 0.8;
+            transition: transform 0.1s;
+        }
+
         body {
             font-family: sans-serif;
             background-color: var(--bg-color);
@@ -99,10 +108,11 @@
         .container {
             background: var(--container-bg);
             padding: 20px;
-            border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             max-width: var(--app-max-width);
             width: 100%;
+            border-radius: calc(var(--radius) * 1.5);
+            /* Container etwas runder als Buttons wirkt oft harmonischer */
         }
 
         .header {
@@ -118,13 +128,13 @@
             height: 20vh;
             padding: 12px;
             border: 1px solid var(--input-border);
-            border-radius: 6px;
             font-size: 16px;
             background: var(--container-bg);
             color: var(--text-color);
             transition: border 0.2s;
             font-family: sans-serif;
             resize: none;
+            border-radius: var(--radius);
         }
 
         textarea:focus {
@@ -144,25 +154,53 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 8px;
             border: 1px solid var(--input-border);
             background: var(--card-highlight);
             color: var(--text-color);
             font-size: 1.1em;
             transition: transform 0.1s;
+            border-radius: var(--radius);
         }
 
-        .btn-save {
-            width: 100%;
+        .action-buttons-container {
+            display: flex;
+            gap: 8px;
             margin-top: 10px;
+            align-items: stretch;
+            /* Sorgt für exakt gleiche Höhe */
+        }
+
+        .btn-save,
+        .btn-cancel {
             padding: 15px;
-            background: var(--accent-color);
-            color: white;
+            /* Gleiches Padding = gleiche Höhe */
             border: none;
-            border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
             font-size: 1em;
+            transition: opacity 0.2s;
+            border-radius: var(--radius);
+        }
+
+        .btn-save {
+            flex: 2;
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-cancel {
+            display: none;
+            /* Wird per JS auf 'block' gesetzt */
+            flex: 1;
+            /* dezentes Grau-Blau/Slate */
+            background: #607d8b;
+            color: white;
+        }
+
+        /* Ein wenig Feedback beim Drücken */
+        .btn-save:active,
+        .btn-cancel:active {
+            opacity: 0.8;
         }
 
         /* 4. SUCHLEISTE */
@@ -175,11 +213,11 @@
             width: 100%;
             padding: 10px 15px;
             border: 1px solid var(--input-border);
-            border-radius: 8px;
             background: var(--container-bg);
             color: var(--text-color);
             font-size: 0.95em;
             transition: all 0.2s;
+            border-radius: var(--radius);
         }
 
         .search-wrapper input:focus {
@@ -205,17 +243,29 @@
             background: var(--container-bg);
             margin-bottom: 10px;
             padding: 12px 12px 4px 12px;
-            border-radius: 8px;
             display: flex;
             flex-direction: column;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             border-left: 0 solid var(--accent-color);
             transition: all 0.2s ease;
+            border-radius: var(--radius);
         }
 
         .note-item.pinned {
             border-left: 6px solid var(--accent-color);
             background-color: var(--card-highlight);
+        }
+
+        .action-btns {
+            /* Buttons innerhalb der Notiz */
+            display: flex;
+            gap: 8px;
+        }
+
+        .note-date {
+            font-size: 0.75em;
+            opacity: 0.5;
+            font-family: monospace;
         }
 
         .note-text {
@@ -224,14 +274,26 @@
             word-break: break-word;
             overflow-wrap: anywhere;
             margin-bottom: 8px;
+            padding-top: 4px;
         }
 
+        /* LINIE OBEN
         .note-actions {
             display: flex;
             gap: 12px;
             justify-content: flex-end;
             border-top: 2px solid rgba(0, 0, 0, 0.05);
             padding-top: 4px;
+        }*/
+        .note-actions {
+            display: flex;
+            justify-content: space-between;
+            /* Datum links, Buttons rechts */
+            align-items: center;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+            /* Linie jetzt UNTEN */
+            padding-bottom: 6px;
+            margin-bottom: 10px;
         }
 
         .icon-btn {
@@ -254,10 +316,16 @@
             flex-grow: 1;
         }
 
+        /* KOMPAKT OBEN MODUS
         .note-item.compact .note-actions {
             width: auto;
             border-top: none;
             padding-top: 0;
+        }*/
+        .note-item.compact .note-actions {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
 
         /* 6. MARKDOWN STYLING */
@@ -275,8 +343,9 @@
             background: var(--quote-bg) !important;
             font-style: italic;
             color: var(--text-color);
-            border-radius: 5px;
             box-shadow: var(--quote-shadow);
+            border-radius: calc(var(--radius) / 2);
+            /* Zitate wirken mit kleinerem Radius oft besser */
         }
 
         .note-text hr {
@@ -344,7 +413,6 @@
             background: var(--container-bg);
             color: var(--text-color);
             padding: 16px 20px;
-            border-radius: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -359,6 +427,7 @@
             white-space: pre-line;
             text-align: center;
             overflow: hidden;
+            border-radius: calc(var(--radius) * 1.5);
         }
 
         .toast.show {
@@ -393,7 +462,6 @@
             color: var(--accent-color);
             background: var(--card-highlight);
             border: 1px solid var(--accent-color);
-            border-radius: 6px;
             font-weight: bold;
             font-size: 1em;
             cursor: pointer;
@@ -414,6 +482,12 @@
             display: none;
         }
 
+        .dev-btn,
+        .dev-console-input,
+        .toast-btn {
+            border-radius: var(--radius);
+        }
+
         /* 9. DEV-MENÜ & KONSOLE */
         .dev-menu-container {
             display: none;
@@ -421,9 +495,9 @@
             padding: 15px;
             background: var(--card-highlight);
             border: 2px dashed var(--accent-color);
-            border-radius: 12px;
             flex-direction: column;
             gap: 12px;
+            border-radius: calc(var(--radius) * 1.5);
         }
 
         .dev-button-grid {
@@ -436,7 +510,6 @@
             padding: 10px;
             background: var(--container-bg);
             border: 1px solid var(--input-border);
-            border-radius: 6px;
             color: var(--text-color);
             cursor: pointer;
             font-size: 0.9em;
@@ -463,7 +536,6 @@
             padding: 10px 10px 10px 45px;
             background: var(--input-bg-alt);
             border: 1px solid var(--accent-color);
-            border-radius: 6px;
             color: var(--text-color);
             font-family: 'Courier New', monospace;
             font-size: 1em;
@@ -483,6 +555,26 @@
         }
 
         /* 10. ANIMATIONEN & EASTER EGGS */
+        .slide-out {
+            animation: slideOutLeft 0.4s forwards;
+            pointer-events: none;
+            /* Verhindert Mehrfachklicks während Animation */
+        }
+
+        @keyframes slideOutLeft {
+            0% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(-100%);
+                opacity: 0;
+                margin-bottom: -60px;
+                /* Lässt nachfolgende Notizen sanft hochwandern */
+            }
+        }
+
         @keyframes shake-red {
 
             0%,
@@ -558,7 +650,7 @@
 
     <div
         style="max-width: 400px; width: 99%; display: flex; justify-content: flex-end; margin-bottom: 5px; margin-right: 5px;">
-        <span id="versionDisplay" onclick="devClick()"
+        <span id="versionDisplay" onclick="handleDevAccess()"
             style="font-size: 0.75em; color: #888; font-family: sans-serif; cursor: pointer;"></span>
     </div>
 
@@ -598,7 +690,13 @@
                 <button class="small-btn" onmousedown="event.preventDefault()" onclick="insertMarkdown('hr')"
                     title="Trennlinie">―</button>
             </div>
-            <button class="btn-save" onclick="saveNote()">Hinzufügen</button>
+
+            <div class="action-buttons-container">
+                <button class="btn-save" onclick="saveNote()">Hinzufügen</button>
+                <button id="cancelEditBtn" class="btn-cancel" onclick="cancelEdit()">
+                    Abbrechen
+                </button>
+            </div>
 
             <div id="devMenu" class="dev-menu-container">
                 <div class="dev-console-wrapper">
@@ -667,9 +765,6 @@
             "v1.0.0": "Basis-Version mit Auto-Save"
         };
 
-        let isConsoleUnlocked = false;
-        let devClickCount = 0;
-        let sortMode = 'date'; // 'date' oder 'pin'
         let currentEditId = null; // !=null, wenn wir gerade eine Notiz bearbeiten
         let toastTimeout;
 
@@ -757,23 +852,42 @@
             const text = input.value.trim();
             if (!text) return;
 
-            const notes = JSON.parse(localStorage.getItem('notes')) || [];
+            // Hier 'let' statt 'const', damit wir das Array überschreiben können
+            let notes = JSON.parse(localStorage.getItem('notes')) || [];
 
             if (currentEditId) {
-                // Wenn wir editieren, ersetzen wir den alten Eintrag
+                // Bearbeitungs-Modus
                 notes = notes.map(n => n.id === currentEditId ? { ...n, text: text } : n);
+
+                // Wichtig: ID zurücksetzen
                 currentEditId = null;
-                document.querySelector('.btn-save').innerText = "Hinzufügen";
+
+                // Button-Text zurücksetzen
+                const saveBtn = document.querySelector('.btn-save');
+                if (saveBtn) saveBtn.innerText = "Hinzufügen";
+                // Abbrechen Button wieder entfernen
+                const cancelBtn = document.getElementById('cancelEditBtn');
+                if (cancelBtn) cancelBtn.style.display = 'none';
             } else {
-                // ansonsten erstellen wir eine neue Notiz
-                notes.push({ id: Date.now(), text: text, pinned: false, created: Date.now() });
+                // Neuerstellungs-Modus
+                notes.push({
+                    id: Date.now(),
+                    text: text,
+                    pinned: false,
+                    created: Date.now()
+                });
             }
 
+            // Speichern und UI aktualisieren
             localStorage.setItem('notes', JSON.stringify(notes));
 
+            // Input leeren
             input.value = '';
+            // UI neu zeichnen
             renderNotes();
-            document.activeElement.blur(); // Tastatur am Handy einklappen
+            // Tastatur am Handy schließen
+            input.blur();
+
             showToast("Notiz gespeichert!");
         }
 
@@ -781,32 +895,69 @@
             let notes = JSON.parse(localStorage.getItem('notes')) || [];
             let n = notes.find(x => x.id === id);
             if (n) {
-                document.getElementById('noteInput').value = n.text;
-                currentEditId = id; // Wir merken uns, dass wir gerade editieren
+                const input = document.getElementById('noteInput');
+                input.value = n.text;
+                currentEditId = id; // ID vergeben für saveNote() = Bearbeitungsmodus
                 document.querySelector('.btn-save').innerText = "Änderung speichern";
-                document.getElementById('noteInput').focus();
-                // Wir löschen hier noch NICHTS!
+
+                const cancelBtn = document.getElementById('cancelEditBtn');
+                if (cancelBtn) cancelBtn.style.display = 'block';
+
+                // Zum Eingabefeld scrollen
+                input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                input.focus();
             }
         }
 
+        function cancelEdit() {
+            // 1. ID zurücksetzen
+            currentEditId = null;
+
+            // 2. Input leeren
+            const input = document.getElementById('noteInput');
+            input.value = '';
+
+            // 3. Button-Text zurücksetzen
+            const saveBtn = document.querySelector('.btn-save');
+            if (saveBtn) saveBtn.innerText = "Hinzufügen";
+
+            // 4. Abbrechen-Button wieder verstecken
+            const cancelBtn = document.getElementById('cancelEditBtn');
+            if (cancelBtn) cancelBtn.style.display = 'none';
+
+            // 5. Tastatur einklappen
+            input.blur();
+        }
+
         function deleteNote(id) {
+            const card = document.getElementById(`note-${id}`);
             let notes = JSON.parse(localStorage.getItem('notes')) || [];
             const noteToDelete = notes.find(n => n.id === id);
             const index = notes.findIndex(n => n.id === id);
 
             if (index !== -1) {
-                // Notiz entfernen
-                notes.splice(index, 1);
-                localStorage.setItem('notes', JSON.stringify(notes));
-                renderNotes();
+                // 1. Visuelle Animation starten (400ms laut deinem CSS)
+                if (card) {
+                    card.classList.add('slide-out');
+                }
 
-                // Toast mit Rückgängig-Funktion
-                showToast("🗑️ Notiz gelöscht", "Rückgängig", () => {
-                    // Die gelöschte Notiz einfach wieder hinzufügen
-                    notes.push(noteToDelete);
+                // 2. Kurz warten, bis die Notiz aus dem Bild geglitten ist
+                setTimeout(() => {
+                    // Notiz aus dem Speicher entfernen
+                    notes.splice(index, 1);
                     localStorage.setItem('notes', JSON.stringify(notes));
                     renderNotes();
-                });
+
+                    // 3. Toast mit Rückgängig-Funktion anzeigen
+                    showToast("🗑️ Notiz gelöscht", "Rückgängig", () => {
+                        // Notiz wiederherstellen
+                        let currentNotes = JSON.parse(localStorage.getItem('notes')) || [];
+                        currentNotes.push(noteToDelete);
+                        localStorage.setItem('notes', JSON.stringify(currentNotes));
+                        renderNotes();
+                        showToast("Wiederhergestellt!");
+                    });
+                }, 400); // 400ms passt zur CSS-Animation
             }
         }
 
@@ -907,14 +1058,31 @@
                 // Klassen vergeben
                 card.className = `note-item ${n.pinned ? 'pinned' : ''} ${isShort ? 'compact' : ''}`;
 
-                card.innerHTML = `
-                                <div class="note-text">${renderedContent}</div>
-                                <div class="note-actions">
-                                    <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern"><span class="mirror-icon">✏️</span></button>
-                                    <button class="icon-btn" onclick="togglePin(${n.id})" title="${n.pinned ? 'Pin lösen' : 'Anpinnen'}">${n.pinned ? '📍' : '📌'}</button>
-                                    <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
-                                </div>
-                                `;
+                if (isShort) {
+                    // Kompakt: Text links, Buttons rechts (kein Datum, keine Trennlinie via CSS)
+                    card.innerHTML = `
+            <div class="note-text">${renderedContent}</div>
+            <div class="action-btns">
+                <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern"><span class="mirror-icon">✏️</span></button>
+                <button class="icon-btn" onclick="togglePin(${n.id})" title="${n.pinned ? 'Pin lösen' : 'Anpinnen'}">${n.pinned ? '📍' : '📌'}</button>
+                <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
+            </div>
+        `;
+                } else {
+                    // Normal: Header mit Datum & Buttons oben, Text darunter
+                    const dateStr = new Date(n.id).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+                    card.innerHTML = `
+            <div class="note-actions">
+                <div class="note-date">${dateStr}</div>
+                <div class="action-btns">
+                    <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern"><span class="mirror-icon">✏️</span></button>
+                <button class="icon-btn" onclick="togglePin(${n.id})" title="${n.pinned ? 'Pin lösen' : 'Anpinnen'}">${n.pinned ? '📍' : '📌'}</button>
+                <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
+                </div>
+            </div>
+            <div class="note-text">${renderedContent}</div>
+        `;
+                }
 
                 list.appendChild(card);
             });
@@ -1105,7 +1273,7 @@
                 input.placeholder = placeholders[randomIndex];
             }
         }
-        
+
         // --- 8. DATA SYNC & TOAST ---
         function showToast(message, actionText = null, actionFn = null, secondaryText = null, secondaryFn = null) {
             const toast = document.getElementById('appToast');
@@ -1231,158 +1399,376 @@
         }
 
         function importNotes() {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".json";
-    input.onchange = e => {
-        const reader = new FileReader();
-        reader.onload = ev => {
-            try {
-                const imp = JSON.parse(ev.target.result);
-                
-                // 1. Bestehende Notizen laden
-                let existingNotes = JSON.parse(localStorage.getItem('notes')) || [];
-                
-                // 2. Speichert den aktuellen Stand als Backup, bevor importiert wird
-                localStorage.setItem('notes_backup_before_import', JSON.stringify(existingNotes));
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = ".json";
+            input.onchange = e => {
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    try {
+                        const imp = JSON.parse(ev.target.result);
 
-                // 3. Zu importierende Notizen identifizieren 
-                // (Prüfung ob 'imp.notes' bereits ein Array ist oder als String vorliegt)
-                let importedNotes = Array.isArray(imp.notes) ? imp.notes : JSON.parse(imp.notes || "[]");
+                        // 1. Bestehende Notizen laden
+                        let existingNotes = JSON.parse(localStorage.getItem('notes')) || [];
 
-                let addedCount = 0;
-                let skippedCount = 0;
+                        // 2. Speichert den aktuellen Stand als Backup, bevor importiert wird
+                        localStorage.setItem('notes_backup_before_import', JSON.stringify(existingNotes));
 
-                // 4. Jede importierte Notiz prüfen
-                importedNotes.forEach(newNote => {
-                    // Prüfung auf Duplikat: Gleiche ID ODER gleicher Inhalt & Erstellungsdatum
-                    const isDuplicate = existingNotes.some(oldNote => 
-                        oldNote.id === newNote.id || 
-                        (oldNote.text === newNote.text && oldNote.created === newNote.created)
-                    );
+                        // 3. Zu importierende Notizen identifizieren 
+                        // (Prüfung ob 'imp.notes' bereits ein Array ist oder als String vorliegt)
+                        let importedNotes = Array.isArray(imp.notes) ? imp.notes : JSON.parse(imp.notes || "[]");
 
-                    if (!isDuplicate) {
-                        existingNotes.push(newNote);
-                        addedCount++;
-                    } else {
-                        skippedCount++;
+                        let addedCount = 0;
+                        let skippedCount = 0;
+
+                        // 4. Jede importierte Notiz prüfen
+                        importedNotes.forEach(newNote => {
+                            // Prüfung auf Duplikat: Gleiche ID ODER gleicher Inhalt & Erstellungsdatum
+                            const isDuplicate = existingNotes.some(oldNote =>
+                                oldNote.id === newNote.id ||
+                                (oldNote.text === newNote.text && oldNote.created === newNote.created)
+                            );
+
+                            if (!isDuplicate) {
+                                existingNotes.push(newNote);
+                                addedCount++;
+                            } else {
+                                skippedCount++;
+                            }
+                        });
+
+                        // 5. Scratchpad ergänzen (falls gewünscht) oder nur setzen, wenn leer
+                        if (imp.scratch && !localStorage.getItem('scratchpad')) {
+                            localStorage.setItem('scratchpad', imp.scratch);
+                        }
+
+                        // 6. Speichern und UI aktualisieren
+                        localStorage.setItem('notes', JSON.stringify(existingNotes));
+                        renderNotes();
+
+                        // 7. Detailliertes Feedback im Toast
+                        let toastMsg = `<strong style="display:block; margin-bottom:4px;">Import abgeschlossen</strong>`;
+                        toastMsg += `📥 ${addedCount} neue Notizen`;
+
+                        if (skippedCount > 0) {
+                            toastMsg += `<br><span style="opacity:0.8; font-size:0.9em;">⏩ ${skippedCount} Duplikate ignoriert</span>`;
+                        }
+
+                        showToast(toastMsg);
+
+                    } catch (err) {
+                        console.error(err);
+                        showToast("❌ Fehler beim Import!", "Huch");
                     }
-                });
+                };
+                reader.readAsText(e.target.files[0]);
+            };
+            input.click();
+        }
 
-                // 5. Scratchpad ergänzen (falls gewünscht) oder nur setzen, wenn leer
-                if (imp.scratch && !localStorage.getItem('scratchpad')) {
-                    localStorage.setItem('scratchpad', imp.scratch);
-                }
-
-                // 6. Speichern und UI aktualisieren
-                localStorage.setItem('notes', JSON.stringify(existingNotes));
-                renderNotes();
-
-                // 7. Detailliertes Feedback im Toast
-                let toastMsg = `<strong style="display:block; margin-bottom:4px;">Import abgeschlossen</strong>`;
-                toastMsg += `📥 ${addedCount} neue Notizen`;
-                
-                if (skippedCount > 0) {
-                    toastMsg += `<br><span style="opacity:0.8; font-size:0.9em;">⏩ ${skippedCount} Duplikate ignoriert</span>`;
-                }
-                
-                showToast(toastMsg);
-
-            } catch (err) {
-                console.error(err);
-                showToast("❌ Fehler beim Import!", "Huch");
+        function restoreLastBackup() {
+            const backup = localStorage.getItem('notes_backup_before_import');
+            if (!backup) {
+                showToast("❌ Kein Backup zum Wiederherstellen gefunden.");
+                return;
             }
-        };
-        reader.readAsText(e.target.files[0]);
-    };
-    input.click();
-}
 
-function restoreLastBackup() {
-    const backup = localStorage.getItem('notes_backup_before_import');
-    if (!backup) {
-        showToast("❌ Kein Backup zum Wiederherstellen gefunden.");
-        return;
-    }
-
-    if (confirm("Möchtest du den Stand vor dem letzten Import wiederherstellen? Aktuelle Änderungen gehen verloren.")) {
-        localStorage.setItem('notes', backup);
-        renderNotes();
-        showToast("✅ Stand wiederhergestellt.");
-    }
-}
-
-        // --- 10. ENTWICKLER-MODUS (DEV-MENU) ---
-        function devClick() {
-            devClickCount++;
-            if (devClickCount >= 5) {
-                document.getElementById('devMenu').style.display = 'flex';
-                devClickCount = 0;
+            if (confirm("Möchtest du den Stand vor dem letzten Import wiederherstellen? Aktuelle Änderungen gehen verloren.")) {
+                localStorage.setItem('notes', backup);
+                renderNotes();
+                showToast("✅ Stand wiederhergestellt.");
             }
         }
 
-        function closeDevMenu() { document.getElementById('devMenu').style.display = 'none'; lockConsole(); }
+        // --- 10. ENTWICKLER-MODUS (DEV-MENU) ---
+        const DEV_HASH = "6c237681e70921603a306be9a1a5d9833fce5c1e268f52b1650970eaad0dce21";
+
+        // Hilfsfunktion zum Erstellen eines SHA-256 Hashes
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // --- Globale Variablen ---
+        let devClickCount = 0;
+        let devClickTimer = null;
+        let isConsoleUnlocked = false;
+
+        // --- Zentrale Steuerung (Öffnen & Zähler) ---
+        function handleDevAccess(isShortcut = false) {
+            const devMenu = document.getElementById('devMenu');
+            if (!devMenu) return;
+
+            // Falls schon offen: Abbruch
+            if (devMenu.style.display === 'flex') {
+                showToast("Entwickler-Modus bereits aktiv");
+                resetDevCounter();
+                return;
+            }
+
+            // Sofort öffnen oder Zählen
+            if (isShortcut) {
+                executeOpen();
+            } else {
+                devClickCount++;
+
+                clearTimeout(devClickTimer);
+                devClickTimer = setTimeout(resetDevCounter, 2000);
+
+                if (devClickCount >= 5) {
+                    executeOpen();
+                    resetDevCounter();
+                }
+            }
+
+            function executeOpen() {
+                devMenu.style.display = 'flex';
+                lockConsole(); // Immer gesperrt starten
+                showToast("Entwickler-Modus aktiviert");
+
+                setTimeout(() => {
+                    const input = document.getElementById('devConsole');
+                    if (input) input.focus();
+                }, 300);
+            }
+        }
+
+        function resetDevCounter() {
+            devClickCount = 0;
+            if (devClickTimer) clearTimeout(devClickTimer);
+        }
+
+        // --- Status-Funktionen ---
+
+        function closeDevMenu() {
+            const devMenu = document.getElementById('devMenu');
+            if (devMenu) devMenu.style.display = 'none';
+            lockConsole(); // Sicherheitshalber beim Schließen sperren
+        }
 
         function lockConsole() {
             isConsoleUnlocked = false;
             const input = document.getElementById('devConsole');
-            input.type = "password";
-            input.value = "";
-            input.classList.remove('unlocked');
-            document.getElementById('consoleIcon').innerText = "🔒";
+            const icon = document.getElementById('consoleIcon');
+
+            if (input) {
+                input.type = "password";
+                input.value = "";
+                input.classList.remove('unlocked');
+            }
+            if (icon) icon.innerText = "🔒";
         }
 
         function unlockConsole() {
             isConsoleUnlocked = true;
             const input = document.getElementById('devConsole');
-            input.type = "text";
-            input.classList.add('unlocked');
-            document.getElementById('consoleIcon').innerText = "🔓";
+            const icon = document.getElementById('consoleIcon');
+
+            if (input) {
+                input.type = "text";
+                input.classList.add('unlocked');
+            }
+            if (icon) icon.innerText = "🔓";
             showToast("Konsole entsperrt.");
         }
 
-        function handleConsole(e) {
-            if (e.key === "Enter") {
-                const input = document.getElementById('devConsole');
+        async function handleConsole(event) {
+            if (event.key === 'Enter') {
+                const input = event.target;
                 const val = input.value.trim();
+                const cmd = val.toLowerCase();
+
                 if (!isConsoleUnlocked) {
-                    if (val === "1234") unlockConsole(); else triggerShake(input);
-                    input.value = ""; return;
+                    // 1. Logik zum Entsperren via Hash
+                    const inputHash = await sha256(val);
+
+                    if (inputHash === DEV_HASH) {
+                        unlockConsole();
+                        input.placeholder = "Befehl eingeben...";
+                        input.value = "";
+                    } else {
+                        if (typeof triggerShake === 'function') triggerShake(input);
+                        showToast("Falscher Code!");
+                        input.value = "";
+                    }
+                } else {
+                    // 2. Logik für Befehle (wenn entsperrt)
+                    const shouldKeepFocus = executeCommand(cmd);
+
+                    input.value = ""; // Feld immer leeren nach Befehl
+                    if (shouldKeepFocus) {
+                        input.focus();
+                    } else {
+                        input.blur();
+                    }
                 }
-                if (executeCommand(val.toLowerCase())) input.value = "";
             }
         }
 
         function executeCommand(cmd) {
-            const main = document.getElementById('main-container');
+            // Falls Befehle Argumente bräuchten, könnte man hier cmd.split(' ') nutzen
             switch (cmd) {
-                case 'matrix':
-                    const quotes = ["Der Weltraum: Unendliche Weiten.", "Houston, wir haben kein Problem."];
-                    document.body.classList.add('space-mode');
-                    main.classList.add('blur-active');
-                    showToast(`<span class="toast-title">Space Mode</span><br>${quotes[Math.floor(Math.random() * quotes.length)]}`, "LANDEN", () => {
-                        document.body.classList.remove('space-mode');
-                        main.classList.remove('blur-active');
-                    });
+                // --- DESIGN ---
+                case 'nord':
+                case 'dark':
+                case 'light':
+                    setTheme(cmd);
+                    showToast(`${cmd.charAt(0).toUpperCase() + cmd.slice(1)} Theme aktiviert`);
                     return true;
-                case 'stats':
-                    let notes = JSON.parse(localStorage.getItem('notes')) || [];
-                    let done = 0, total = 0;
-                    notes.forEach(n => {
-                        done += (n.text.match(/- \[x\]/g) || []).length;
-                        total += done + (n.text.match(/- \[ \]/g) || []).length;
-                    });
-                    showToast(`<span class="toast-title">Statistik</span><br>Erledigt: ${done}/${total}`, "OK");
+
+                // --- SYSTEM ---
+                case 'info': return cmdInfo();
+                case 'logs': return cmdLogs();
+                case 'help': return cmdHelp();
+                case 'cls': showToast("Konsole bereit."); return true;
+                case 'lock': lockConsole(); showToast("Konsole gesperrt"); return true;
+                case 'reset': if (confirm("Alles löschen?")) { localStorage.clear(); location.reload(); } return true;
+
+                // --- TOOLS ---
+                case 'test': return cmdTest();
+                case 'clean': return cmdClean();
+                case 'stats': return cmdStats();
+                case 'export': exportNotes(); return false;
+                case 'import': importNotes(); return false;
+
+                // --- EASTER EGG ---
+                case 'matrix': return cmdMatrix();
+
+                default:
+                    showToast("Unbekannter Befehl: " + cmd);
                     return true;
-                case 'logs': showLastChangelog(); return true;
-                case 'nord': setTheme('nord'); return true;
-                case 'dark': setTheme('dark'); return true;
-                case 'light': setTheme('light'); return true;
-                case 'lock': lockConsole(); return true;
-                case 'cls': showToast("Konsole bereinigt"); return true;
-                default: triggerShake(document.getElementById('devConsole')); return false;
             }
         }
+
+        // --- SYSTEM LOGIK ---
+        function cmdInfo() {
+            const notesCount = (JSON.parse(localStorage.getItem('notes')) || []).length;
+            const currentTheme = localStorage.getItem('note_theme') || 'light';
+            const lastMode = localStorage.getItem('last_mode') || 'list';
+
+            const infoHTML = `
+        <span class="toast-title">ℹ️ System Info</span>
+        <hr class="toast-divider">
+        <div style="text-align: left; font-size: 0.9em; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+            <b style="color:var(--accent-color)">Version:</b> <span>${APP_VERSION}</span>
+            <b style="color:var(--accent-color)">Notizen:</b> <span>${notesCount}</span>
+            <b style="color:var(--accent-color)">Theme:</b> <span>${currentTheme}</span>
+            <b style="color:var(--accent-color)">Start-Modus:</b> <span>${lastMode}</span>
+        </div>`;
+            showToast(infoHTML, "OK");
+            return true;
+        }
+
+        function cmdLogs() {
+            let logHTML = `<span class="toast-title">📜 Versionsverlauf</span><hr class="toast-divider">`;
+            Object.keys(CHANGELOG).sort().reverse().forEach(ver => {
+                logHTML += `
+            <div style="margin-bottom: 8px;">
+                <div style="font-size: 1.2em; font-weight: bold; color: var(--accent-color);">${ver}</div>
+                <div style="font-size: 0.9em; opacity: 0.8;">${CHANGELOG[ver]}</div>
+            </div>`;
+            });
+            showToast(logHTML, "OK");
+            return true;
+        }
+
+        function cmdHelp() {
+            showToast(`
+        <span class="toast-title">🛠️ Terminal Hilfe</span>
+        <hr class="toast-divider">
+        <div style="text-align: left; font-family: monospace; font-size: 0.85em; width: 100%;">
+            <b style="color:var(--accent-color)">System:</b> info, logs, cls, lock, reset<br>
+            <b style="color:var(--accent-color)">Tools:</b> test, clean, stats, export, import<br>
+            <b style="color:var(--accent-color)">Design:</b> nord, dark, light
+        </div>
+        <div style="font-size:0.7em; margin-top:5px; opacity:0.4;">Psst: Versuch mal 'matrix'...</div>
+    `, "OK");
+            return true;
+        }
+
+        // --- TOOL LOGIK ---
+        function cmdClean() {
+            let allNotes = JSON.parse(localStorage.getItem('notes')) || [];
+            let removedCount = 0;
+
+            const cleanedNotes = allNotes.map(n => {
+                const lines = n.text.split('\n');
+                const remainingLines = lines.filter(line => {
+                    if (line.trim().startsWith('- [x]')) { removedCount++; return false; }
+                    return true;
+                });
+                return { ...n, text: remainingLines.join('\n').trim() };
+            }).filter(n => n.text !== "");
+
+            if (removedCount > 0) {
+                localStorage.setItem('notes', JSON.stringify(cleanedNotes));
+                renderNotes();
+                showToast(`🧹 ${removedCount} erledigte Aufgaben entfernt!`);
+            } else {
+                showToast("Nichts zu tun. Alles sauber! ✨");
+            }
+            return true;
+        }
+
+        function cmdStats() {
+            const allStatsNotes = JSON.parse(localStorage.getItem('notes')) || [];
+            let totalTodos = 0, doneTodos = 0;
+
+            allStatsNotes.forEach(n => {
+                totalTodos += (n.text.match(/- \[ \]/g) || []).length;
+                const done = (n.text.match(/- \[x\]/g) || []).length;
+                doneTodos += done;
+                totalTodos += done;
+            });
+
+            const percent = totalTodos > 0 ? Math.round((doneTodos / totalTodos) * 100) : 0;
+            const bar = "🟩".repeat(Math.round(percent / 10)) + "⬜".repeat(10 - Math.round(percent / 10));
+
+            showToast(`
+        <span class="toast-title">📊 Aufgaben-Statistik</span>
+        <hr class="toast-divider">
+        <div style="font-size: 1.1em; margin-bottom: 5px;">${percent}% erledigt</div>
+        <div style="font-size: 0.8em; letter-spacing: 2px; margin-bottom: 10px;">${bar}</div>
+        <div style="font-size: 0.85em; opacity: 0.8;">Offen: ${totalTodos - doneTodos} | Erledigt: ${doneTodos}</div>
+    `, "WEITER SO!");
+            return false;
+        }
+
+        function cmdMatrix() {
+            const spaceQuotes = ["In einer weit, weit entfernten Galaxis...", "Houston, wir haben kein Problem.", "Sterne funkeln, Notizen bleiben."];
+            const randomQuote = spaceQuotes[Math.floor(Math.random() * spaceQuotes.length)];
+            const mainContainer = document.getElementById('main-container');
+
+            document.body.classList.add('space-mode');
+            mainContainer.classList.add('blur-active');
+
+            showToast(`
+        <div class="floating" style="font-size: 2.5em; margin-bottom: 10px;">🚀</div>
+        <span class="toast-title">Space Mode</span>
+        <hr class="toast-divider"><div style="font-style: italic;">"${randomQuote}"</div>
+    `, "LANDEN", () => {
+                document.body.classList.remove('space-mode');
+                mainContainer.classList.remove('blur-active');
+            });
+            return true;
+        }
+
+        function cmdTest() {
+            const testText = `### 🚀 Markdown Test\n- [ ] Offene Aufgabe\n- [x] Erledigt\n> Testzitat`;
+            let notes = JSON.parse(localStorage.getItem('notes')) || [];
+            notes.push({ id: Date.now(), text: testText, pinned: true, created: Date.now() });
+            localStorage.setItem('notes', JSON.stringify(notes));
+            renderNotes();
+            showToast("🚀 Test-Notiz erstellt!");
+            return false;
+        }
+
+
+
+
+
 
         function showLastChangelog() {
             const msg = CHANGELOG[APP_VERSION] || "Neue Updates verfügbar!";
