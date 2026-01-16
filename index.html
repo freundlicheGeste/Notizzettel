@@ -31,10 +31,6 @@
             /* (*1,5 .dev-menu-container, .toast, container) (/2 .note-text blockquote)*/
         }
 
-        [data-theme="snoopy"] {
-            --card-highlight: #fff;
-        }
-
         [data-theme="dark"] {
             --bg-color: #121212;
             --container-bg: #1e1e1e;
@@ -66,7 +62,72 @@
             --quote-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.4), 1px 1px 1px rgba(255, 255, 255, 0.05);
         }
 
-        /* Toolbar-Reihenfolge nur im Snoopy-Theme */
+        /* =========================================
+        SNOOPY THEME SPEZIFIKATIONEN
+        ========================================= */
+
+        /* 1. Variablen & Grundfarben */
+        [data-theme="snoopy"] {
+            --accent-color: #ffca1a;
+        }
+
+        [data-theme="snoopy"] .small-btn {
+            background: #fffae6;
+        }
+
+        /* 2. Gepinnte Nachrichten: Hintergrundfarbe */
+        [data-theme="snoopy"] .note-item.pinned {
+            background-color: white;
+            border-left: 6px solid var(--accent-color);
+        }
+
+        /* 3. Woodstock Hintergrund-Bild */
+        [data-theme="snoopy"] .theme-special-bg {
+            background-image: url('woodstock_512.png');
+            background-repeat: no-repeat;
+            background-position: right 4px bottom 2px;
+            background-size: 96px 96px;
+        }
+
+        [data-theme="snoopy"] .theme-snoopy-bg {
+            background-image: url('snoopy_600.png');
+            background-repeat: no-repeat;
+            background-position: right 8px bottom -8px;
+            background-size: 148px 148px;
+        }
+
+        [data-theme="snoopy"] h2 {
+            border-bottom-color: #ffcc00;
+            /* Ein schönes Woodstock-Gelb */
+        }
+
+        [data-theme="snoopy"] .list-header {
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 5px;
+        }
+
+        /* Das Bild in der Notiz */
+        [data-theme="snoopy"] .theme-note-bg {
+            background-image: url('snoopy-woody_320.png');
+            background-repeat: no-repeat;
+            background-position: left 4px top 4px;
+            background-size: 46px 46px;
+            transition: background-position 0.3s ease;
+            /* Weicher Übergang */
+        }
+
+        /* Platzhalter für das Datum, damit oben rechts Platz bleibt */
+        .snoopy-date-placeholder {
+            width: 34px;
+            height: 15px;
+        }
+
+        /* 4. Padding Korrektur für das Textfeld */
+        [data-theme="snoopy"] #noteInput.theme-special-bg {
+            padding-bottom: 40px;
+        }
+
+        /* 5. Toolbar-Button Reihenfolge */
         [data-theme="snoopy"] .btn-bold {
             order: 1;
         }
@@ -97,10 +158,6 @@
 
         [data-theme="snoopy"] .btn-hr {
             order: 8;
-        }
-
-        [data-theme="snoopy"] .small-btn {
-            background: #fff5e6;
         }
 
 
@@ -138,6 +195,56 @@
             transition: all 0.3s ease;
             min-height: 100vh;
             overflow-x: hidden;
+            -webkit-user-select: none;
+            /* Verhindert Textmarkierung für fast alles (Buttons, Header, etc.) */
+            user-select: none;
+        }
+
+        /* Erlaubt das Markieren von Text NUR in den Notizen und im Eingabefeld */
+        #noteInput,
+        .note-text,
+        input[type="text"] {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        /* Globale Anpassung für Überschriften */
+        /* 1. DEZENTER STANDARD (für Light, Dark, Nord) */
+        h2,
+        h3 {
+            font-family: sans-serif;
+            font-weight: 600;
+            text-transform: none;
+            letter-spacing: normal;
+            border-bottom: none;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.25em;
+        }
+
+        h3 {
+            font-size: 1.1em;
+        }
+
+        /* 2. SNOOPY-SPEZIAL-LOOK (Nur wenn data-theme="snoopy") */
+        [data-theme="snoopy"] h2,
+        [data-theme="snoopy"] h3 {
+            font-family: "Segoe UI", "Avenir Next", Roboto, sans-serif;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        [data-theme="snoopy"] h2 {
+            font-size: 1.4em;
+            border-bottom: 3px solid #ffcc00;
+            /* Woodstock-Gelb */
+            display: inline-block;
+            padding-right: 20px;
+            margin-bottom: 15px;
         }
 
         .container {
@@ -157,6 +264,24 @@
             margin-bottom: 20px;
         }
 
+        #versionDisplay {
+            font-size: 0.75em;
+            color: #888;
+            font-family: sans-serif;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: color 0.2s ease;
+        }
+
+        /* Kleiner Bonus: Optisches Feedback beim Klicken */
+        #versionDisplay:active {
+            color: var(--accent-color);
+        }
+
+        #versionDisplay:hover {
+            color: var(--accent-color);
+        }
 
         /* 3. FORMULAR-ELEMENTE & BUTTONS */
 
@@ -238,6 +363,21 @@
             /* dezentes Grau-Blau/Slate */
             background: #607d8b;
             color: white;
+        }
+
+        .btn-todo {
+            font-size: 1.4em;
+        }
+
+        .btn-quote {
+            padding-top: 9px;
+            font-size: 1.6em;
+        }
+
+        .nav-btn {
+            color: gray;
+            font-size: 1.3em;
+            border: 1px solid #ccc;
         }
 
 
@@ -499,7 +639,7 @@
             border: 0;
             border-top: 1px solid var(--input-border);
             width: 100%;
-            margin: 5px 0;
+            margin: 5px;
             opacity: 0.5;
         }
 
@@ -602,8 +742,8 @@
             left: 10px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 1.7em;
-            margin-right: 7px;
+            font-size: 1.6em;
+            margin-right: 10px;
         }
 
         .dev-console-input.unlocked {
@@ -681,6 +821,10 @@
             animation: space-travel 3s ease-in-out infinite alternate;
         }
 
+        /* 11. TESTBEREICH */
+
+        /* 11. TESTBEREICH */
+
         */
     </style>
 </head>
@@ -689,8 +833,7 @@
 
     <div
         style="max-width: 400px; width: 99%; display: flex; justify-content: flex-end; margin-bottom: 5px; margin-right: 5px;">
-        <span id="versionDisplay" onclick="handleDevAccess()"
-            style="font-size: 0.75em; color: #888; font-family: sans-serif; cursor: pointer;"></span>
+        <span id="versionDisplay" onclick="handleDevAccess()"></span>
     </div>
 
     <div class="container" id="main-container">
@@ -728,6 +871,21 @@
                     onclick="insertMarkdown('quote')" title="Zitat">”</button>
                 <button class="small-btn btn-hr" onmousedown="event.preventDefault()" onclick="insertMarkdown('hr')"
                     title="Trennlinie">―</button>
+            </div>
+            <div style="display: flex; gap: 8px; margin: 10px; justify-content: center;">
+            </div>
+
+            <div style="display: flex; gap: 8px; margin: 10px; justify-content: center;">
+                <button class="small-btn nav-btn" onmousedown="event.preventDefault()" onclick="moveCursor('left')"
+                    title="Links">←</button>
+                <button class="small-btn nav-btn" onmousedown="event.preventDefault()" onclick="moveCursor('right')"
+                    title="Rechts">→</button>
+                <button class="small-btn nav-btn" onmousedown="event.preventDefault()" onclick="moveCursor('up')"
+                    title="Hoch">↑</button>
+                <button class="small-btn nav-btn" onmousedown="event.preventDefault()" onclick="moveCursor('down')"
+                    title="Runter">↓</button>
+                <button class="small-btn nav-btn" onmousedown="event.preventDefault()" onclick="toggleKeyboard()"
+                    title="Tastatur">⌨</button>
             </div>
 
             <div class="action-buttons-container">
@@ -791,11 +949,93 @@
 
     <script>
 
-        // --- 1. GLOBALE KONSTANTEN & STATE ---
+        //-----------------------------------------------------------------------
+        // --- 0. TESTBEREICH ---
+        function applySnoopySpecial(themeName) {
+            const noteInput = document.getElementById('noteInput');
+            const scratchInput = document.getElementById('scratchpadInput');
 
-        const APP_VERSION = "v1.0.4";
+            // Alle aktuell angezeigten Notiz-Karten finden
+            const allNoteCards = document.querySelectorAll('.note-item');
+
+            if (themeName === 'snoopy') {
+                noteInput.classList.add('theme-special-bg');
+                scratchInput.classList.add('theme-snoopy-bg');
+
+                // Klasse zu jeder vorhandenen Notiz hinzufügen
+                allNoteCards.forEach(card => card.classList.add('theme-note-bg'));
+            } else {
+                noteInput.classList.remove('theme-special-bg');
+                scratchInput.classList.remove('theme-snoopy-bg');
+
+                // Klasse von jeder Notiz entfernen
+                allNoteCards.forEach(card => card.classList.remove('theme-note-bg'));
+            }
+        }
+        // --- 0. TESTBEREICH ---
+        //-----------------------------------------------------------------------
+
+
+        const STORAGE_KEY = 'ntz_v1_storage';
+
+        // 1. Das "leere" Template (Default-Werte)
+        const ntz_template = {
+            sys: { version: "1.0.0" },
+            cfg: { theme: "light", sort: "date", feedback: true },
+            ui: { lastview: "notes", search: false },
+            data: { main: [], scratch: "" },
+            dev: { godmode: false },
+            bak: { preimport: null }
+        };
+
+        // 2. Die globale Variable, mit der die App arbeitet
+        let ntz = {};
+
+        // 3. Methode: Speichern (Deine gewünschte writeToDisk)
+        function saveToDisk() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(ntz));
+                console.log("Daten erfolgreich gespeichert.");
+            } catch (e) {
+                console.error("Fehler beim Speichern auf Disk:", e);
+            }
+        }
+
+        // 4. Methode: App-Start (Initialisierung)
+        function initApp() {
+            const savedData = localStorage.getItem(STORAGE_KEY);
+
+            if (savedData) {
+                try {
+                    const parsed = JSON.parse(savedData);
+                    // Wir mergen das Template mit den geladenen Daten, 
+                    // falls neue Versionen Felder hinzufügen
+                    ntz = Object.assign({}, ntz_template, parsed);
+                    console.log("Daten geladen. Version: " + ntz.sys.version);
+                } catch (e) {
+                    console.error("Daten korrupt, lade Standardwerte.");
+                    ntz = JSON.parse(JSON.stringify(ntz_template));
+                }
+            } else {
+                // Erster Start der App
+                ntz = JSON.parse(JSON.stringify(ntz_template));
+                console.log("Keine Daten gefunden. Initialisiere mit Standardwerten.");
+                saveToDisk(); // Direkt einmal anlegen
+            }
+
+            // Hier könntest du jetzt UI-Funktionen aufrufen, z.B.
+        }
+
+        // 5. App starten
+        initApp(); // 1. Zuerst die Datenbasis herstellen
+
+
+        // --- 1. GLOBALE KONSTANTEN ---
+
+        const APP_VERSION = "v1.0.5";
         const CHANGELOG = {
-            "v1.0.4": "SilentMode für Info Toasts",
+            "v1.0.5": "Single Objekt (localStorage), Navigationsleiste, btn-quote + btn-todo Text vergrößert und ausgemittelt, Kompaktmodus 40->50, Toasts (Mirror icon + Leerzeichen (2) Erkennung)",
+            "v1.0.4": "Bugfixes, Toast Formatierung, Snoopy Theme",
             "v1.0.3": "Space-Mode, Stats & UI Refactoring",
             "v1.0.2": "Entwickler-Modus & Suchleiste",
             "v1.0.1": "Markdown Support",
@@ -803,57 +1043,62 @@
         };
 
         let currentEditId = null; // !=null, wenn wir gerade eine Notiz bearbeiten
+        let scratchpadTimeout = null; // Debounce fürs Scratchpad
         let toastTimeout;
-        let silentMode = false; // Info Toasts unterdrücken
 
 
         // --- 2. INITIALISIERUNG ---
 
         window.onload = () => {
-            // Theme laden
-            const savedTheme = localStorage.getItem('note_theme') || 'light';
-            setTheme(savedTheme);
+            // 2. Theme laden (Nutzt jetzt das Objekt!)
+            setTheme(ntz.cfg.theme);
 
-            // Modus, Sortierung & Suche wiederherstellen
-            handleSearch(true);
-            switchMode(localStorage.getItem('last_mode') || 'list');
-            toggleSortMode(localStorage.getItem('sort_mode') || 'date');
+            // 3. Modus, Sortierung & Suche wiederherstellen
+            // Wir übergeben die Werte aus unserem ntz-Objekt
+            switchMode(ntz.ui.lastview);
+            toggleSortMode(ntz.cfg.sort);
 
-            // GodMode
-            if (localStorage.getItem('dev_godmode') === 'true') {
-                // 1. Konsole entsperren
-                isConsoleUnlocked = true;
-                const icon = document.getElementById('consoleIcon');
-                if (icon) icon.innerText = "🔓";
-                document.getElementById('devConsole')?.classList.add('unlocked');
-
-                // 2. Dev-Menü anzeigen
-                const devMenu = document.getElementById('devMenu');
-                if (devMenu) devMenu.style.display = 'flex';
+            // Suche: Falls ntz.ui.search true ist, handleSearch ausführen
+            if (ntz.ui.search) {
+                handleSearch(true);
             }
 
-            // UI Details
-            setRandomPlaceholder();
-            renderNotes();
+            // 4. GodMode
+            // Falls ntz.dev.godmode aus dem LocalStorage geladen wurde:
+            updateDevUI();
 
-            // Update check
+            // 5. UI Details & Content
+            setRandomPlaceholder();
+            renderNotes(); // Diese Funktion muss nun ntz.data.main verwenden!
+
+            // 6. System-Dienste
             checkUpdate();
 
-            // Service Worker
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js').catch(() => { });
             }
         };
 
         function checkUpdate() {
-            const lastVersion = localStorage.getItem('note_app_version');
-            document.getElementById('versionDisplay').innerText = APP_VERSION;
-            // erster Check für Erstinstallation, da lastVersion null
+            // Wir greifen auf ntz.sys.version zu, die wir in ntz_template definiert haben
+            const lastVersion = ntz.sys.version;
+
+            // UI-Anzeige
+            const versionElement = document.getElementById('versionDisplay');
+            if (versionElement) versionElement.innerText = APP_VERSION;
+
+            // Vergleich der Versionen
+            // Wenn lastVersion "1.0.0" ist (default) und APP_VERSION z.B. "1.1.0"
             if (lastVersion && lastVersion !== APP_VERSION) {
                 const nachricht = CHANGELOG[APP_VERSION] || "Neue Funktionen verfügbar!";
                 showUpdateToast(`Update ${APP_VERSION}:\n\n${nachricht}`);
             }
-            localStorage.setItem('note_app_version', APP_VERSION);
+
+            // WICHTIG: Den neuen Versionsstand im Objekt speichern
+            ntz.sys.version = APP_VERSION;
+
+            // Da sich ein Systemwert geändert hat, speichern wir das Objekt auf die Disk
+            saveToDisk();
         }
 
         function showUpdateToast(msg) {
@@ -864,13 +1109,14 @@
                 const title = parts[0];
                 const content = parts.slice(1).join('\n\n');
                 formattedMsg = `
-                        <span class="toast-title">${title}</span>
-                        <hr class="toast-divider">
-                        <div style="width: 100%; text-align: center;">${content}</div>
-                    `;
+                <span class="toast-title">${title}</span>
+                <hr class="toast-divider">
+                <div style="width: 100%; text-align: center; margin-top: 3px;">${content}</div>
+            `;
             } else {
                 formattedMsg = msg;
             }
+            // Übergibt den formatierten String an die allgemeine showToast Funktion
             showToast(formattedMsg);
         }
 
@@ -879,18 +1125,21 @@
 
         function setTheme(themeName) {
             document.documentElement.setAttribute('data-theme', themeName);
-            localStorage.setItem('note_theme', themeName);
 
+            ntz.cfg.theme = themeName;
+            saveToDisk();
             // Theme-Farbe für die Browser-Leiste anpassen
             const metaTheme = document.querySelector('meta[name="theme-color"]');
             if (metaTheme) {
                 const colors = { 'nord': '#2e3440', 'dark': '#121212', 'light': '#ff8c00' };
-                metaTheme.setAttribute('content', colors[themeName] || colors.light);
+                metaTheme.setAttribute('content', colors[themeName] || colors['light']);
             }
+            applySnoopySpecial('snoopy');
         }
 
         function toggleTheme() {
-            const current = localStorage.getItem('note_theme');
+            // NEU: Zugriff über ntz.cfg
+            const current = ntz.cfg.theme;
 
             if (current === 'dark' || current === 'nord') {
                 setTheme('light');
@@ -900,26 +1149,31 @@
         }
 
         function switchMode(mode) { /* Toggle Notizen < > Scratchpad */
-            // Falls man gerade editiert und den Modus wechselt: Abbruch des Editiermodus
+            // Falls man gerade editiert und den Modus wechselt: Abbruch des Editiermodus (Reset)
             currentEditId = null;
-            if (document.querySelector('.btn-save')) {
-                document.querySelector('.btn-save').innerText = "Hinzufügen";
-            }
-            document.getElementById('noteInput').value = '';
+            const saveBtn = document.querySelector('.btn-save');
+            if (saveBtn) saveBtn.innerText = "Hinzufügen";
 
-            const isScratch = mode === 'scratch';
+            const noteInput = document.getElementById('noteInput');
+            if (noteInput) noteInput.value = '';
+
+            const isScratch = (mode === 'scratch');
+
+            // UI Elemente umschalten
             document.getElementById('list-mode').style.display = isScratch ? 'none' : 'block';
             document.getElementById('scratchpad-mode').style.display = isScratch ? 'block' : 'none';
             document.getElementById('noteListContainer').style.display = isScratch ? 'none' : 'block';
-            document.getElementById('searchBar').style.display = mode === 'scratch' ? 'none' : 'block';
+            document.getElementById('searchBar').style.display = isScratch ? 'none' : 'block';
 
             if (isScratch) {
-                document.getElementById('scratchpadInput').value = localStorage.getItem('scratchpad') || '';
+                // NEU: Wert aus ntz.data.scratch laden
+                document.getElementById('scratchpadInput').value = ntz.data.scratch || '';
             } else {
                 renderNotes();
             }
 
-            localStorage.setItem('last_mode', mode);
+            ntz.ui.lastview = mode;
+            saveToDisk();
         }
 
 
@@ -930,24 +1184,23 @@
             const text = input.value.trim();
             if (!text) return;
 
-            // Hier 'let' statt 'const', damit wir das Array überschreiben können
-            let notes = JSON.parse(localStorage.getItem('notes')) || [];
-
             // Für den Toast merken
             const isEditMode = Boolean(currentEditId);
 
             if (currentEditId) { // Bearbeitungs-Modus
-                notes = notes.map(n => n.id === currentEditId ? { ...n, text: text } : n);
-                // ID zurücksetzen
+                // Mappen im Objekt-Array
+                ntz.data.main = ntz.data.main.map(n =>
+                    n.id === currentEditId ? { ...n, text: text } : n
+                );
+
                 currentEditId = null;
-                // Button-Text zurücksetzen
                 const saveBtn = document.querySelector('.btn-save');
                 if (saveBtn) saveBtn.innerText = "Hinzufügen";
-                // Abbrechen Button wieder entfernen
+
                 const cancelBtn = document.getElementById('cancelEditBtn');
                 if (cancelBtn) cancelBtn.style.display = 'none';
             } else { // Neuerstellungs-Modus
-                notes.push({
+                ntz.data.main.push({
                     id: Date.now(),
                     text: text,
                     pinned: false,
@@ -955,34 +1208,28 @@
                 });
             }
 
-            // Notiz speichern
-            localStorage.setItem('notes', JSON.stringify(notes));
-            // Notizfeld leeren
+            // Speichern & UI Update
+            saveToDisk();
             input.value = '';
-            // UI neu zeichnen
             renderNotes();
-            // Tastatur am Handy schließen
             input.blur();
 
-            // 🔔 Unterschiedliche Toasts
-            if (!silentMode) {
-                showToast(isEditMode ? "Notiz aktualisiert ✏️" : "Notiz erstellt ✅");
+            if (ntz.cfg.feedback) {
+                showToast(isEditMode ? "✏️  Notiz aktualisiert" : "✅  Notiz erstellt");
             }
         }
 
         function editNote(id) {
-            let notes = JSON.parse(localStorage.getItem('notes')) || [];
-            let n = notes.find(x => x.id === id);
-            if (n) {
+            let notes = ntz.data.main.find(x => x.id === id);
+            if (notes) {
                 const input = document.getElementById('noteInput');
-                input.value = n.text;
+                input.value = notes.text;
                 currentEditId = id; // ID vergeben für saveNote() = Bearbeitungsmodus
                 document.querySelector('.btn-save').innerText = "Änderung speichern";
 
                 const cancelBtn = document.getElementById('cancelEditBtn');
                 if (cancelBtn) cancelBtn.style.display = 'block';
 
-                // Zum Eingabefeld scrollen
                 input.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 input.focus();
             }
@@ -1007,35 +1254,27 @@
             // 5. Tastatur einklappen
             input.blur();
         }
-
         function deleteNote(id) {
-            const card = document.getElementById(`note-${id}`);
-            let notes = JSON.parse(localStorage.getItem('notes')) || [];
-            const noteToDelete = notes.find(n => n.id === id);
-            const index = notes.findIndex(n => n.id === id);
+            // Suche im Objekt
+            const index = ntz.data.main.findIndex(n => n.id === id);
 
             if (index !== -1) {
-                // Notiz aus dem Speicher entfernen
-                notes.splice(index, 1);
-                localStorage.setItem('notes', JSON.stringify(notes));
+                // Backup der Notiz für die Rückgängig-Funktion
+                const noteToDelete = ntz.data.main[index];
+
+                // Aus dem Objekt entfernen
+                ntz.data.main.splice(index, 1);
+                saveToDisk();
                 renderNotes();
 
-                // 3. Toast mit Rückgängig-Funktion anzeigen
-                showToast("🗑️ Notiz gelöscht", "Rückgängig", () => {
-                    // Notiz wiederherstellen
-                    let currentNotes = JSON.parse(localStorage.getItem('notes')) || [];
-
-                    // An originaler Position (index) wieder einfügen
-                    currentNotes.splice(index, 0, noteToDelete);
-
-                    localStorage.setItem('notes', JSON.stringify(currentNotes));
+                showToast("🗑️  Notiz gelöscht", "Rückgängig", () => {
+                    // Wiederherstellen: Einfach zurück ins Array an den alten Platz
+                    ntz.data.main.splice(index, 0, noteToDelete);
+                    saveToDisk();
                     renderNotes();
 
-                    // Kleiner Timeout, damit der Browser merkt, dass ein NEUER Toast kommt
                     setTimeout(() => {
-                        if (!silentMode) {
-                            showToast("✅ Wiederhergestellt!");
-                        }
+                        if (ntz.cfg.feedback) showToast("✅  Wiederhergestellt!");
                     }, 100);
                 });
             }
@@ -1098,92 +1337,138 @@
             textarea.setSelectionRange(newCursorPos, newCursorPos);
         }
 
+        function moveCursor(direction) {
+            const textarea = document.getElementById('noteInput');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+
+            // Wir fokussieren das Feld, damit die Bewegung sichtbar wird
+            textarea.focus();
+
+            if (direction === 'left') {
+                textarea.setSelectionRange(start - 1, start - 1);
+            } else if (direction === 'right') {
+                textarea.setSelectionRange(start + 1, start + 1);
+            } else if (direction === 'up' || direction === 'down') {
+                // Vertikale Navigation in Textareas ist komplexer. 
+                // Ein einfacher Weg: Wir suchen den Zeilenumbruch.
+                const lines = text.substr(0, start).split("\n");
+                const currentLine = lines.length - 1;
+                const currentColumn = lines[currentLine].length;
+
+                const allLines = text.split("\n");
+                let targetLine = (direction === 'up') ? currentLine - 1 : currentLine + 1;
+
+                if (targetLine >= 0 && targetLine < allLines.length) {
+                    let newPos = 0;
+                    for (let i = 0; i < targetLine; i++) {
+                        newPos += allLines[i].length + 1; // +1 für das \n
+                    }
+                    // Versuche die gleiche Spalte zu treffen oder das Ende der neuen Zeile
+                    newPos += Math.min(currentColumn, allLines[targetLine].length);
+                    textarea.setSelectionRange(newPos, newPos);
+                }
+            }
+        }
+
+        function toggleKeyboard() {
+            const textarea = document.getElementById('noteInput');
+            if (document.activeElement === textarea) {
+                textarea.blur(); // Tastatur schließen (verliert Fokus)
+            } else {
+                textarea.focus(); // Tastatur öffnen
+            }
+        }
+
+
         // --- 5. NOTIZ-DARSTELLUNG ---
 
         function renderNotes(searchQuery = '') {
             const list = document.getElementById('noteList');
-            let notes = JSON.parse(localStorage.getItem('notes')) || [];
 
-            // Sortiermodus Anzeige: chronologisch oder alphabetisch
-            const sortMode = localStorage.getItem('sort_mode') || 'date';
-            document.getElementById('sortToggle').innerText = sortMode === 'alpha' ? '🔤' : '↕️';
+            // 1. Daten direkt aus dem ntz-Objekt ziehen (statt localStorage)
+            let notes = [...ntz.data.main]; // Kopie erstellen, um das Original beim Filtern/Sortieren nicht zu verändern
 
-            // Sichtbarkeit von Buttons (Suche, Sortierung) und Suchfeld erst ab 5 Notizen
-            const toolsVisible = notes.length >= 5;
+            // 2. Präferenzen aus ntz.cfg und ntz.ui nutzen
+            const sortMode = ntz.cfg.sort;
+            const userPrefSearchActive = ntz.ui.search;
+
+            const sortToggleBtn = document.getElementById('sortToggle');
+            if (sortToggleBtn) {
+                sortToggleBtn.innerText = sortMode === 'alpha' ? '🔤' : '↕️';
+            }
+
+            // 3. Sichtbarkeits-Logik
+            const toolsVisible = ntz.data.main.length >= 5;
             const searchBar = document.getElementById('searchBar');
             const listHeader = document.getElementById('listHeader');
             const searchBtn = document.getElementById('searchToggle');
             const sortBtn = document.getElementById('sortToggle');
-            const userPrefActive = localStorage.getItem('search_active') === 'true';
 
-            // Buttons (Suche/Sortierung) nur anzeigen, wenn genug Notizen vorhanden sind
             if (searchBtn) searchBtn.style.display = toolsVisible ? 'flex' : 'none';
             if (sortBtn) sortBtn.style.display = toolsVisible ? 'flex' : 'none';
-            // Suchleiste nur anzeigen, wenn (genug Notizen da sind) UND (der User sie aktiv eingeschaltet hat)
+
             if (searchBar) {
-                searchBar.style.display = (toolsVisible && userPrefActive) ? 'block' : 'none';
-            }
-            // Header nur anzeigen, wenn min. eine Notizen erstellt wurden
-            // aber auch wenn gerade keine Notiz angezeigt wird während des Suchmodus
-            if (listHeader) {
-                listHeader.style.display = (notes.length > 0 || searchQuery) ? 'flex' : 'none';
+                searchBar.style.display = (toolsVisible && userPrefSearchActive) ? 'block' : 'none';
             }
 
-            // In Notizen suchen und nur Notizen mit Suchbegriff anzeigen
+            if (listHeader) {
+                listHeader.style.display = (ntz.data.main.length > 0 || searchQuery) ? 'flex' : 'none';
+            }
+
+            // 4. Such-Filter
             if (searchQuery) {
                 const q = searchQuery.toLowerCase();
                 notes = notes.filter(n => n.text.toLowerCase().includes(q));
             }
-            // Falls keine Notizen mit Suchbegriff (leere Anzeigeliste)
-            if (notes.length === 0) { // Hinweis anzeigen
-                list.innerHTML = searchQuery ? '<p style="text-align:center; margin-top: 30px; opacity:0.5;">Keine Treffer gefunden.</p>' : '';
+
+            // 5. Leere Liste abfangen
+            if (notes.length === 0) {
+                list.innerHTML = searchQuery ?
+                    '<p style="text-align:center; margin-top: 30px; opacity:0.5;">Keine Treffer gefunden.</p>' : '';
                 return;
             }
 
-            // Sortierung der Notizen
+            // 6. Sortierung
             notes.sort((a, b) => {
+                // Pinned immer oben
                 if (a.pinned && !b.pinned) return -1;
                 if (!a.pinned && b.pinned) return 1;
 
                 if (sortMode === 'alpha') {
-                    // Entfernt Markdown-Sonderzeichen am Zeilenanfang für korrekte alphabetische Sortierung
                     const cleanForSort = (str) => {
                         return str.toLowerCase()
-                            .replace(/^###\s+/, '')         // Überschrift entfernen
-                            .replace(/^>\s+/, '')           // Zitat-Zeichen entfernen
-                            .replace(/^-\s+/, '')           // Listen-Strich entfernen
-                            .replace(/^-\s\[\s\]\s+/, '')   // Checkbox offen entfernen
-                            .replace(/^-\s\[x\]\s+/, '')    // Checkbox erledigt entfernen
-                            .replace(/^\*\*/, '')           // Fett-Start entfernen
-                            .trim();                        // Leerzeichen am Anfang und Ende des Strings entfernen
+                            .replace(/^###\s+/, '')
+                            .replace(/^>\s+/, '')
+                            .replace(/^-\s+/, '')
+                            .replace(/^-\s\[\s\]\s+/, '')
+                            .replace(/^-\s\[x\]\s+/, '')
+                            .replace(/^\*\*/, '')
+                            .trim();
                     };
-
-                    const textA = cleanForSort(a.text);
-                    const textB = cleanForSort(b.text);
-
-                    return textA.localeCompare(textB);
+                    return cleanForSort(a.text).localeCompare(cleanForSort(b.text));
                 }
-
+                // Chronologisch (neueste zuerst)
                 return b.created - a.created;
             });
 
-            // Notizliste leeren
+            // 7. DOM-Aufbau
             list.innerHTML = '';
 
-            // Notizenansicht erstellen und in die Liste
+            const isSnoopy = document.documentElement.getAttribute('data-theme') === 'snoopy';//SNOOPY
+
             notes.forEach(n => {
-
                 const renderedContent = parseMarkdown(n.text, n.id);
-                const card = document.createElement('div');
+                const card = document.createElement('div'); //SNOOPY
+                card.id = `note-${n.id}`;
 
-                // Ist die Notiz kurz und ohne Zeilenumbrüche/Markdown?
-                const isShort = n.text.length < 40 && !n.text.includes('\n') && !n.text.includes('###') && !n.text.includes('- ');
+                const isShort = n.text.length < 50 && !n.text.includes('\n') && !n.text.includes('###') && !n.text.includes('- ');
 
-                // Klassen vergeben - Aussehen zuweisen
+                // Klassen zuweisen
                 card.className = `note-item ${n.pinned ? 'pinned' : ''} ${isShort ? 'compact' : ''}`;
 
-                if (isShort) {
-                    // Kompaktansicht: Text links, Buttons rechts (kein Datum, keine Trennlinie via CSS)
+                if (isShort) { // Kompakt Ansicht
                     card.innerHTML = `
                         <div class="note-text">${renderedContent}</div>
                         <div class="action-btns">
@@ -1192,29 +1477,32 @@
                             <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
                         </div>
                     `;
-                } else {
-                    const dateStr = new Date(n.id);
-                    // Datums-Formatierung: YYYY-MM-DD
+                } else { // Header Ansicht
+                    // Datumsformat YYYY-MM-DD
+                    const dateStr = new Date(n.created || n.id);
                     const datePart = dateStr.getFullYear() + '-' +
                         String(dateStr.getMonth() + 1).padStart(2, '0') + '-' +
                         String(dateStr.getDate()).padStart(2, '0');
                     const timePart = String(dateStr.getHours()).padStart(2, '0') + ':' +
                         String(dateStr.getMinutes()).padStart(2, '0');
 
-                    // // Normalansicht: Header mit Datum & Buttons, Text darunter
+                    if (isSnoopy) {//SNOOPY
+                        card.classList.add('theme-note-bg');
+                    }
+                    const dateContent = isSnoopy ? `<div class="snoopy-date-placeholder"></div>` : `${datePart}<br>${timePart}`;//SNOOPY
+
                     card.innerHTML = `
                         <div class="note-actions">
-                            <div class="note-date">${datePart}<br>${timePart}</div>
+                            <div class="note-date">${dateContent}</div>
                             <div class="action-btns">
                                 <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern"><span class="mirror-icon">✏️</span></button>
-                            <button class="icon-btn" onclick="toggleNotePin(${n.id})" title="${n.pinned ? 'Pin lösen' : 'Anpinnen'}">${n.pinned ? '📍' : '📌'}</button>
-                            <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
+                                <button class="icon-btn" onclick="toggleNotePin(${n.id})" title="${n.pinned ? 'Pin lösen' : 'Anpinnen'}">${n.pinned ? '📍' : '📌'}</button>
+                                <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
                             </div>
                         </div>
                         <div class="note-text">${renderedContent}</div>
                     `;
                 }
-                // Notiz wieder in die Notizliste hinzufügen
                 list.appendChild(card);
             });
         }
@@ -1245,41 +1533,35 @@
 
         // --- 6. NOTIZLISTE (Sonderfunktionen) ---
 
-        function toggleNotePin(id) { // Notiz anpinnen
-            let notes = JSON.parse(localStorage.getItem('notes')) || [];
-            notes = notes.map(n => {
-                if (n.id === id) n.pinned = !n.pinned;
-                return n;
-            });
-            localStorage.setItem('notes', JSON.stringify(notes));
-            renderNotes();
+        function toggleNotePin(id) {
+            const note = ntz.data.main.find(n => n.id === id);
+            if (note) {
+                note.pinned = !note.pinned;
+                saveToDisk();
+                renderNotes();
+            }
         }
-
         function toggleTodo(id, todoText, isDone) { // Checklisteneinträge von Notizen (ohne note edit) bearbeiten
-            let notes = JSON.parse(localStorage.getItem('notes')) || [];
-            let note = notes.find(n => n.id === id);
+            // 1. Notiz im ntz-Objekt finden
+            let note = ntz.data.main.find(n => n.id === id);
 
             if (note) {
-                // 1. HTML-Entities zurückwandeln, falls Sonderzeichen im Text sind
-                // (z.B. aus &amp; wird wieder &), damit der Text im localStorage gefunden wird.
+                // HTML-Entities zurückwandeln (falls Sonderzeichen im Text sind)(z.B. aus &amp; wird wieder &)
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = todoText;
                 const decodedTodoText = tempDiv.textContent;
 
-                // 2. Status-Strings festlegen
                 const oldStatus = isDone ? '- [x]' : '- [ ]';
                 const newStatus = isDone ? '- [ ]' : '- [x]';
 
-                // 3. Den Text im Objekt ersetzen
-                // Suchen nach der Kombination aus Status-Präfix und dem dekodierten Text
                 const searchString = `${oldStatus} ${decodedTodoText}`;
                 const replacementString = `${newStatus} ${decodedTodoText}`;
 
                 if (note.text.includes(searchString)) {
                     note.text = note.text.replace(searchString, replacementString);
 
-                    // 4. Speichern und neu zeichnen
-                    localStorage.setItem('notes', JSON.stringify(notes));
+                    // 2. Speichern speichern und UI aktualisieren
+                    saveToDisk();
                     renderNotes();
                 } else {
                     console.error("Todo-Zeile konnte im Originaltext nicht gefunden werden.");
@@ -1295,25 +1577,23 @@
             const input = document.getElementById('searchInput');
 
             if (restore) {
-                const wasActive = localStorage.getItem('search_active') === 'true';
-                // Beim Laden nur den State initialisieren, renderNotes() regelt den Rest
-                if (bar) bar.style.display = wasActive ? 'block' : 'none';
+                if (bar) bar.style.display = ntz.ui.search ? 'block' : 'none';
                 return;
             }
 
-            // Aktuellen Zustand prüfen (sichtbar?)
-            const isCurrentlyVisible = bar && bar.style.display !== 'none';
-
-            if (isCurrentlyVisible) {
-                // Ausblenden
-                localStorage.setItem('search_active', 'false');
-                clearSearchField(false); // Leert Input und ruft renderNotes() auf -> blendet aus
+            // Toggle-Logik basierend auf dem ntz-Objekt
+            if (ntz.ui.search) {
+                // War aktiv -> jetzt deaktivieren
+                ntz.ui.search = false;
+                clearSearchField(false);
             } else {
-                // Einblenden
-                localStorage.setItem('search_active', 'true');
+                // War inaktiv -> jetzt aktivieren
+                ntz.ui.search = true;
                 renderNotes();
-                setTimeout(() => input.focus(), 50); // Focus ins Suchfeld
+                if (input) setTimeout(() => input.focus(), 50);
             }
+
+            saveToDisk(); // Zustand (Suche an/aus) permanent merken
         }
 
         function clearSearchField(shouldFocus = true) {
@@ -1321,8 +1601,7 @@
             if (!input) return;
 
             input.value = '';
-            // handleSearchInput() blendet das "X" aus und ruft renderNotes() auf
-            handleSearchInput();
+            handleSearchInput(); // Blendet das "X" aus und rendert neu
 
             if (shouldFocus) {
                 input.focus();
@@ -1331,13 +1610,17 @@
 
         function handleSearchInput() {
             const val = document.getElementById('searchInput').value;
-            document.getElementById('clearSearch').style.display = val ? 'block' : 'none';
+            const clearBtn = document.getElementById('clearSearch');
+            if (clearBtn) clearBtn.style.display = val ? 'block' : 'none';
+
+            // Die renderNotes Funktion filtert nun basierend auf diesem Wert
             renderNotes(val);
         }
 
         function toggleSortMode() {
-            let currentMode = localStorage.getItem('sort_mode') || 'date';
-            localStorage.setItem('sort_mode', currentMode === 'alpha' ? 'date' : 'alpha');
+            ntz.cfg.sort = (ntz.cfg.sort === 'alpha' ? 'date' : 'alpha');
+
+            saveToDisk();
             renderNotes();
         }
 
@@ -1345,7 +1628,20 @@
         // --- 8. SCRATCHPAD ---
 
         function saveScratchpad() {
-            localStorage.setItem('scratchpad', document.getElementById('scratchpadInput').value);
+            const content = document.getElementById('scratchpadInput').value;
+
+            // UI sofort aktualisieren (falls nötig)
+            // ntz.dev.scratchpadContent = content; 
+
+            // Debounce: Vorherigen Timer abbrechen
+            clearTimeout(scratchpadTimeout);
+
+            // Neuen Timer setzen: Erst nach 500ms Inaktivität speichern
+            scratchpadTimeout = setTimeout(() => {
+                console.log("Speichere Scratchpad...");
+                ntz.data.scratch = content; // In deinem Datenobjekt ablegen
+                if (typeof saveToDisk === "function") saveToDisk();
+            }, 500);
         }
 
         function setRandomPlaceholder() {
@@ -1370,6 +1666,19 @@
             const toast = document.getElementById('appToast');
             const textSpan = document.getElementById('toastText');
 
+            // --- AUTOMATISIERUNG START ---
+            // 1. Stift-Icon automatisch spiegeln
+            if (message.startsWith("✏️")) {
+                message = message.replace("✏️", "<span class='mirror-icon'>✏️</span>");
+            }
+
+            // 2. Doppelte Leerzeichen in HTML-Leerzeichen umwandeln für korrekten Abstand
+            // Dies sucht nach zwei oder mehr Leerzeichen und ersetzt sie durch &nbsp;
+            if (message.includes("  ")) {
+                message = message.replace(/  /g, '&nbsp;&nbsp;');
+            }
+            // --- AUTOMATISIERUNG ENDE ---
+
             // Container & Progressbar suchen/erstellen
             let btnContainer = toast.querySelector('.toast-button-container');
             if (!btnContainer) {
@@ -1389,7 +1698,7 @@
             clearTimeout(toastTimeout);
 
             // HTML-Tags Erkennung im Toast Text
-            const htmlTags = ['<span', '<div', '<br', '<small', '<b', '<strong', '<hr', '<p'];
+            const htmlTags = ['<span', '<div', '<br', '<small', '<b', '<strong', '<hr', '<p', '&nbsp'];
             const isHTML = htmlTags.some(tag => message.toLowerCase().includes(tag));
 
             // Ausgabetextformat richtig setzen
@@ -1461,38 +1770,37 @@
             clearTimeout(toastTimeout);
         }
 
-        // --- 9. IMPORT / EXPORT ---
+
+        // --- 10. IMPORT / EXPORT ---
+
         function exportNotes() {
             try {
                 const jetzt = new Date();
                 const pad = (n) => String(n).padStart(2, '0');
                 const ts = `${jetzt.getFullYear()}-${pad(jetzt.getMonth() + 1)}-${pad(jetzt.getDate())}_${pad(jetzt.getHours())}-${pad(jetzt.getMinutes())}-${pad(jetzt.getSeconds())}`;
 
-                const notesData = JSON.parse(localStorage.getItem('notes') || '[]');
-                const scratchData = localStorage.getItem('scratchpad') || '';
-
-                const dataObj = {
-                    notes: notesData,
-                    scratch: scratchData,
+                // Das Objekt für den Export klonen und das Datum hinzufügen
+                const exportObj = {
+                    ...ntz,
                     exportDate: ts
                 };
 
-                const dataStr = JSON.stringify(dataObj, null, 2);
+                const dataStr = JSON.stringify(exportObj, null, 2);
                 const blob = new Blob([dataStr], { type: "application/json" });
                 const url = URL.createObjectURL(blob);
 
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = `notizzettel_backup_${ts}.json`;
+                a.download = `ntz_backup_${ts}.json`;
 
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
 
-                showToast("💾 Backup wurde erstellt");
+                showToast("💾  Backup wurde erstellt");
             } catch (err) {
-                showToast("❌ Fehler beim Export!");
+                showToast("❌  Fehler beim Export!");
             }
         }
 
@@ -1506,59 +1814,70 @@
                     try {
                         const imp = JSON.parse(ev.target.result);
 
-                        // 1. Bestehende Notizen laden
-                        let existingNotes = JSON.parse(localStorage.getItem('notes')) || [];
+                        // 1. Sicherheits-Backup des aktuellen Standes im ntz-Objekt erstellen
+                        ntz.bak.preimport = JSON.parse(JSON.stringify(ntz));
+                        saveToDisk();
 
-                        // 2. Speichert den aktuellen Stand als Backup, bevor importiert wird
-                        localStorage.setItem('notes_backup_before_import', JSON.stringify(existingNotes));
-
-                        // 3. Zu importierende Notizen identifizieren 
-                        // (Prüfung ob 'imp.notes' bereits ein Array ist oder als String vorliegt)
-                        let importedNotes = Array.isArray(imp.notes) ? imp.notes : JSON.parse(imp.notes || "[]");
+                        // 2. Daten extrahieren (Kompatibilität prüfen)
+                        // Wenn imp.data existiert, ist es das neue Format, sonst das alte
+                        let importedNotes = [];
+                        if (imp.data && Array.isArray(imp.data.main)) {
+                            importedNotes = imp.data.main;
+                        } else if (Array.isArray(imp.notes)) {
+                            importedNotes = imp.notes;
+                        }
 
                         let addedCount = 0;
                         let skippedCount = 0;
 
-                        // 4. Jede importierte Notiz prüfen
+                        // 3. Notizen mergen
                         importedNotes.forEach(newNote => {
-                            // Prüfung auf Duplikat: Gleiche ID ODER gleicher Inhalt & Erstellungsdatum
-                            const isDuplicate = existingNotes.some(oldNote =>
+                            const isDuplicate = ntz.data.main.some(oldNote =>
                                 oldNote.id === newNote.id ||
                                 (oldNote.text === newNote.text && oldNote.created === newNote.created)
                             );
 
                             if (!isDuplicate) {
-                                existingNotes.push(newNote);
+                                ntz.data.main.push(newNote);
                                 addedCount++;
                             } else {
                                 skippedCount++;
                             }
                         });
 
-                        // 5. Scratchpad ergänzen (falls gewünscht) oder nur setzen, wenn leer
-                        if (imp.scratch && !localStorage.getItem('scratchpad')) {
-                            localStorage.setItem('scratchpad', imp.scratch);
+                        // 4. Scratchpad ergänzen (nur wenn das importierte nicht leer ist und das lokale schon)
+                        //    ansonsten wird das importierte under das bestehende integriert
+                        const importedScratch = (imp.data && imp.data.scratch) ? imp.data.scratch : imp.scratch;
+
+                        if (importedScratch) {
+                            if (!ntz.data.scratch) {
+                                // Fall A: Lokal leer -> Einfach übernehmen
+                                ntz.data.scratch = importedScratch;
+                            } else if (ntz.data.scratch !== importedScratch) {
+                                // Fall B: Beide haben Inhalt -> Sicher zusammenführen
+                                ntz.data.scratch += "\n\n--- Importiertes Backup ---\n" + importedScratch;
+                            }
                         }
 
-                        // 6. Speichern und UI aktualisieren
-                        localStorage.setItem('notes', JSON.stringify(existingNotes));
+                        // 5. Speichern und UI aktualisieren
+                        saveToDisk();
                         renderNotes();
 
-                        // 7. Detailliertes Feedback im Toast
+                        // 6. Feedback
                         let toastMsg = `<div style="text-align:center;">`;
                         toastMsg += `<strong style="display:block; margin-bottom:10px; color:var(--accent-color);">Import abgeschlossen</strong>`;
-                        toastMsg += `<span style="font-size:1em;">📥 ${addedCount} neue Notizen</span>`;
-
+                        toastMsg += `<span style="font-size:1em;">📥  ${addedCount} neue Notizen</span>`;
                         if (skippedCount > 0) {
-                            toastMsg += `<div style="opacity:0.7; font-size:0.85em; margin-top:4px;">⏩ ${skippedCount} Duplikate ignoriert</div>`;
+                            toastMsg += `<div style="opacity:0.7; font-size:0.85em; margin-top:4px;">⏩  ${skippedCount} Duplikate ignoriert</div>`;
                         }
                         toastMsg += `</div>`;
-
-                        showToast(toastMsg);
+                        showToast(toastMsg, "Rückgängig", () => {
+                            restoreLastBackup();
+                        });
 
                     } catch (err) {
-                        console.error(err);
-                        showToast("❌ Fehler beim Import!");
+                        console.error("Import Fehler:", err);
+                        showToast("❌  Fehler beim Import!");
                     }
                 };
                 reader.readAsText(e.target.files[0]);
@@ -1567,161 +1886,183 @@
         }
 
         function restoreLastBackup() {
-            const backup = localStorage.getItem('notes_backup_before_import');
-
-            if (!backup) {
-                showToast("❌ Kein Backup zum Wiederherstellen gefunden.");
+            if (!ntz.bak.preimport) {
+                showToast("❌  Kein Backup zum Wiederherstellen gefunden.");
                 return;
             }
 
             showToast(
                 "Stand vor dem letzten Import wiederherstellen?",
-                {
-                    actionText: "Wiederherstellen",
-                    secondaryText: "Abbrechen",
-                    onAction: () => {
-                        localStorage.setItem('notes', backup);
-                        renderNotes();
-                        showToast("✅ Stand wiederhergestellt.");
-                    }
+                "Wiederherstellen",
+                () => {
+                    // ntz Objekt auf den Stand des Backups zurück setzen
+                    ntz = JSON.parse(JSON.stringify(ntz.bak.preimport));
+
+                    // Backup-Feld danach leeren, um Doppel-Restore zu vermeiden
+                    ntz.bak.preimport = null;
+
+                    saveToDisk();
+                    renderNotes();
+
+                    // Scratchpad-Inhalt aktualisieren, falls man gerade im Scratchpad-Modus ist
+                    const scratchInput = document.getElementById('scratchpadInput');
+                    if (scratchInput) scratchInput.value = ntz.data.scratch;
+
+                    showToast("✅  Stand wiederhergestellt.");
                 }
             );
         }
 
 
-        // --- 10. ENTWICKLER-MODUS (DEV-MENU) ---
+        // --- 11. ENTWICKLER-MODUS (DEV-MENU) ---
 
-        const DEV_HASH = "6c237681e70921603a306be9a1a5d9833fce5c1e268f52b1650970eaad0dce21";
+        const DEV_CONFIG = {
+            HASH: "6c237681e70921603a306be9a1a5d9833fce5c1e268f52b1650970eaad0dce21",
+            CLICK_TIMEOUT: 2000,
+            REQUIRED_CLICKS: 5
+        };
 
-        // Hilfsfunktion zum Wandeln eines SHA-256 Hashes
+        // State-Management
+        const devState = {
+            isVisible: false,
+            isLocked: true,
+            clickCount: 0,
+            clickTimer: null
+        };
+
+        // Hilfsfunktion: SHA-256
         async function sha256(message) {
             const msgBuffer = new TextEncoder().encode(message);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return Array.from(new Uint8Array(hashBuffer))
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('');
         }
 
-        // --- Globale Variablen ---
-        let devClickCount = 0;
-        let devClickTimer = null;
-        let isConsoleUnlocked = false;
+        /**
+         * Zentrale UI-Aktualisierung
+         */
+        function updateDevUI() {
+            const menuElem = document.getElementById('devMenu');
+            const consoleElem = document.getElementById('devConsole');
+            const icon = document.getElementById('consoleIcon');
 
-        // --- Zentrale Steuerung ---
+            if (!menuElem) return;
+
+            // Menü-Sichtbarkeit: Nur wenn explizit getriggert
+            menuElem.style.display = devState.isVisible ? 'flex' : 'none';
+
+            if (consoleElem) {
+                // Entsperrt wenn: Godmode aktiv ODER manuell entsperrt
+                const isUnlocked = ntz.dev.godmode || !devState.isLocked;
+
+                consoleElem.type = isUnlocked ? "text" : "password";
+                consoleElem.placeholder = isUnlocked ? "Befehl eingeben..." : "Code eingeben...";
+                consoleElem.classList.toggle('unlocked', isUnlocked);
+
+                if (icon) icon.innerText = isUnlocked ? "🔓" : "🔒";
+                if (!isUnlocked) consoleElem.value = "";
+            }
+        }
+
+        /**
+         * Zugriffshandling (Klicks/Shortcut)
+         */
         function handleDevAccess(isShortcut = false) {
-            const devMenu = document.getElementById('devMenu');
-            if (!devMenu) return;
-
-            // Falls schon offen: Abbruch
-            if (devMenu.style.display === 'flex') {
-                showToast("Entwickler-Modus bereits aktiv");
-                resetDevCounter();
+            if (isShortcut) {
+                openMenu();
                 return;
             }
 
-            // Sofort öffnen oder Zählen
-            if (isShortcut) {
-                executeOpen();
-            } else {
-                devClickCount++;
+            // Timer-Reset Logik
+            clearTimeout(devState.clickTimer);
+            devState.clickCount++;
 
-                clearTimeout(devClickTimer);
-                devClickTimer = setTimeout(resetDevCounter, 2000);
+            devState.clickTimer = setTimeout(() => {
+                devState.clickCount = 0;
+            }, DEV_CONFIG.CLICK_TIMEOUT);
 
-                if (devClickCount >= 5) {
-                    executeOpen();
-                    resetDevCounter();
-                }
-            }
-
-            function executeOpen() {
-                devMenu.style.display = 'flex';
-                lockConsole(); // Immer gesperrt starten
-                showToast("Entwickler-Modus aktiviert");
-
-                setTimeout(() => {
-                    const input = document.getElementById('devConsole');
-                    if (input) input.focus();
-                }, 300);
+            if (devState.clickCount >= DEV_CONFIG.REQUIRED_CLICKS) {
+                devState.clickCount = 0;
+                openMenu();
             }
         }
 
-        function resetDevCounter() {
-            devClickCount = 0;
-            if (devClickTimer) clearTimeout(devClickTimer);
+        function openMenu() {
+            devState.isVisible = true;
+            updateDevUI();
+            showToast("Entwickler-Optionen geöffnet");
         }
-
-        // --- Status-Funktionen ---
 
         function closeDevMenu() {
-            const devMenu = document.getElementById('devMenu');
-            if (devMenu) devMenu.style.display = 'none';
-            lockConsole(); // Sicherheitshalber beim Schließen sperren
+            devState.isVisible = false;
+            updateDevUI();
         }
 
-        function lockConsole() {
-            isConsoleUnlocked = false;
-            const input = document.getElementById('devConsole');
-            const icon = document.getElementById('consoleIcon');
-
-            if (input) {
-                input.type = "password";
-                input.value = "";
-                input.classList.remove('unlocked');
-            }
-            if (icon) icon.innerText = "🔒";
-        }
-
-        function unlockConsole() {
-            isConsoleUnlocked = true;
-            const input = document.getElementById('devConsole');
-            const icon = document.getElementById('consoleIcon');
-
-            if (input) {
-                input.type = "text";
-                input.classList.add('unlocked');
-            }
-            if (icon) icon.innerText = "🔓";
-            showToast("Konsole entsperrt.");
-        }
-
-        // --- Konsolen Eingaben ---
+        /**
+         * Konsolen-Logik
+         */
         async function handleConsole(event) {
-            if (event.key === 'Enter') {
-                const input = event.target;
-                const val = input.value.trim();
-                const cmd = val.toLowerCase();
+            if (event.key !== 'Enter') return;
 
-                if (!isConsoleUnlocked) {
-                    // 1. Logik zum Entsperren via Hash
-                    const inputHash = await sha256(val);
+            const input = event.target;
+            const val = input.value.trim();
 
-                    if (inputHash === DEV_HASH) {
-                        unlockConsole();
-                        input.placeholder = "Befehl eingeben...";
-                        input.value = "";
-                    } else {
-                        if (typeof triggerShake === 'function') triggerShake(input);
-                        showToast("Falscher Code!");
-                        input.value = "";
-                    }
+            // Fall 1: Konsole gesperrt (und kein Godmode)
+            if (devState.isLocked && !ntz.dev.godmode) {
+                const inputHash = await sha256(val);
+                if (inputHash === DEV_CONFIG.HASH) {
+                    devState.isLocked = false;
+                    showToast("Konsole entsperrt");
                 } else {
-                    // 2. Logik für Befehle (wenn entsperrt)
-                    const shouldKeepFocus = executeCommand(cmd);
-
-                    input.value = ""; // Feld immer leeren nach Befehl
-                    if (shouldKeepFocus) {
-                        input.focus();
-                    } else {
-                        input.blur();
-                    }
+                    if (typeof triggerShake === 'function') triggerShake(input);
+                    showToast("Falscher Code!");
                 }
+                input.value = "";
+                updateDevUI();
+                return;
             }
+
+            // Fall 2: Befehl ausführen
+            const cmd = val.toLowerCase();
+            const shouldKeepFocus = executeCommand(cmd);
+
+            input.value = "";
+            if (!shouldKeepFocus) input.blur();
+            updateDevUI(); // UI Refresh nach Befehl
         }
 
-        // --- Konsolen Befehle ---
-        function executeCommand(cmd) {
-            // Falls Befehle Argumente bräuchten, könnte man hier cmd.split(' ') nutzen
+        function toggleGodMode() {
+            ntz.dev.godmode = !ntz.dev.godmode;
+            if (typeof saveToDisk === "function") saveToDisk();
+            updateDevUI();
+            showToast(ntz.dev.godmode ? "🚀 GodMode aktiv" : "🔒 GodMode aus");
+        }
+
+        /**
+         * Konsolen-Befehle
+         */
+        function executeCommand(input) {
+            // Teilt den Input in Teile: "set gold 500" -> ["set", "gold", "500"]
+            const parts = input.split(' ');
+            const cmd = parts[0].toLowerCase();
+            const args = parts.slice(1);
+
             switch (cmd) {
+                // --- SYSTEM ---
+                case 'help': return cmdHelp();
+                case 'storage': return cmdStorage();
+                case 'reset': return cmdReset();
+                case 'logs': return cmdLogs();
+                case 'dump': return cmdDump();
+                case 'lock':
+                case 'exit':
+                    return cmdLock();
+
+                // --- NOTES ---
+                case 'stats': return cmdStats();
+                case 'clean': return cmdClean();
+
                 // --- DESIGN ---
                 case 'nord': // Easter Egg Theme
                 case 'dark':
@@ -1731,13 +2072,7 @@
                     showToast(`${cmd.charAt(0).toUpperCase() + cmd.slice(1)} Theme aktiviert`);
                     return true;
 
-                // --- SYSTEM ---
-                case 'help': return cmdHelp();
-                case 'logs': return cmdLogs();
-                case 'stats': return cmdStats();
-                case 'storage': return cmdStorage();
-                case 'reset': return cmdReset();
-                case 'lock': lockConsole(); showToast("Konsole gesperrt"); return true;
+
 
                 // --- TOOLS ---
                 case 'note': return cmdNote();
@@ -1749,8 +2084,10 @@
                 case 'matrix': return cmdMatrix();
                 case 'toast': return cmdToast();
 
-                // --- NEU ---
-                case 'godmode': return cmdGodMode();
+                // --- DEV ---
+                case 'godmode':
+                    toggleGodMode();
+                    return true;
 
                 default:
                     showToast("Unbekannter Befehl: " + cmd);
@@ -1758,9 +2095,335 @@
             }
         }
 
+        /**
+         * Konsolen-Hilfsfunktionen
+         */
+        function triggerShake(el) {
+            el.classList.add('shake-red');
+            setTimeout(() => el.classList.remove('shake-red'), 400);
+        }
+
         function setConsoleFocus() {
             const input = document.getElementById('devConsole');
             if (input) input.focus();
+        }
+
+        /**
+         * Konsolen-Befehle Ausführungscode
+         */
+        function cmdHelp() {
+            const helpBody = `
+                    <div style="font-family: monospace; font-size: 0.85em;">
+                        <b style="color:var(--accent-color)">System:</b> info, logs, cls, lock, reset<br>
+                        <b style="color:var(--accent-color)">Tools:</b> test, clean, stats, export, import<br>
+                        <b style="color:var(--accent-color)">Design:</b> nord, dark, light
+                    </div>
+                    <div style="font-size:0.75em; margin-top:10px; opacity:0.5; font-style:italic;">Psst: Versuch mal 'matrix'...</div>
+                `;
+
+            showConsoleModal("🛠️ Terminal Hilfe", helpBody, "OK", () => {
+                setTimeout(() => setConsoleFocus(), 100);
+            });
+            return true;
+        }
+
+        function cmdStorage() {
+            const keys = Object.keys(localStorage);
+            const raw = JSON.stringify(localStorage);
+            const sizeKB = (raw.length * 2 / 1024).toFixed(2);
+            const keyList = keys.map(k => `<code style="color:var(--accent-color)">${k}</code>`).join(", ");
+
+            const storageBody = `
+                    <div style="font-size: 0.9em; line-height: 1.5;">
+                        <b>Belegt:</b> ${sizeKB} KB / 5000 KB<br>
+                        <b>Einträge:</b> ${keys.length}<br>
+                        <div style="margin-top:8px;"><b>Keys:</b><br><span style="font-size:0.9em; opacity:0.8;">${keyList}</span></div>
+                    </div>
+                `;
+
+            showConsoleModal("💾 Speicher-Analyse", storageBody, "OK", () => {
+                setTimeout(() => setConsoleFocus(), 100);
+            });
+            return true;
+        }
+
+        function cmdReset() {
+            // Hier nutzen wir direkt den Wrapper für die Warnung
+            const resetBody = `<div style="font-size: 0.9em;">Alle Notizen & Einstellungen werden unwiderruflich gelöscht.</div>`;
+
+            showConsoleModal("⚠️ Werkseinstellungen?", resetBody, "ABBRECHEN", null, "RESET", () => {
+                localStorage.clear();
+                location.reload();
+            });
+            return true;
+        }
+
+        function cmdLogs() {
+            const rows = Object.keys(CHANGELOG).sort().reverse().map(ver => ({
+                label: ver,
+                value: CHANGELOG[ver]
+            }));
+            showConsoleModal("📜 Versionsverlauf", rows, "OK", () => {
+                setTimeout(() => setConsoleFocus(), 100);
+            });
+            return true;
+        }
+
+        function cmdLock() {
+            devState.isLocked = true;
+            ntz.dev.godmode = false; // Zur Sicherheit Godmode mitausschalten
+            showToast("🔒 Konsole & Godmode gesperrt");
+            return false; // Blur input
+        }
+
+        function cmdDump() {
+            console.log("Aktueller App-State:", ntz);
+            showToast("State in Browser-Konsole ausgegeben");
+            return true;
+        }
+
+        /*=====================================================================================
+        =====================================================================================*/
+
+        function cmdStats() {
+            // 1. Daten direkt aus dem globalen Objekt beziehen
+            const allStatsNotes = ntz.data.main || [];
+            let totalTodos = 0, doneTodos = 0;
+
+            // 2. Todos zählen (Logik bleibt gleich, aber sauberer Zugriff)
+            allStatsNotes.forEach(n => {
+                const open = (n.text.match(/- \[ \]/g) || []).length;
+                const done = (n.text.match(/- \[x\]/g) || []).length;
+
+                doneTodos += done;
+                totalTodos += (open + done);
+            });
+
+            // 3. Berechnung und UI
+            const percent = totalTodos > 0 ? Math.round((doneTodos / totalTodos) * 100) : 0;
+
+            // Kleiner Trick: Math.min/max sorgt dafür, dass die Bar nie länger als 10 Zeichen wird
+            const barCount = Math.min(10, Math.max(0, Math.round(percent / 10)));
+            const bar = "🟩".repeat(barCount) + "⬜".repeat(10 - barCount);
+
+            const statsBody = `
+                    <div style="font-size: 0.85em; opacity: 0.7;">Notizen insgesamt: ${allStatsNotes.length}</div>
+                    <div style="margin: 10px 0;">
+                        <div style="font-size: 1.1em; font-weight: bold;">${percent}% erledigt</div>
+                        <div style="font-size: 0.9em; letter-spacing: 2px; margin-top: 4px;">${bar}</div>
+                    </div>
+                    <div style="font-size: 0.9em;">
+                        <div style="opacity: 0.8;">[x] Erledigt: ${doneTodos}</div>
+                        <div style="opacity: 0.8;">[ ] Offen: ${totalTodos - doneTodos}</div>
+                    </div>
+                `;
+
+            showConsoleModal("📊 Aufgaben-Statistik", statsBody, "OK", () => {
+                setTimeout(() => setConsoleFocus(), 100);
+            });
+            return true;
+        }
+
+        function cmdClean() {
+            const allNotes = ntz.data.main || [];
+            let potentialRemovedCount = 0;
+
+            // 1. Zählen wie viele Zeilen betroffen wären
+            allNotes.forEach(n => {
+                const matches = n.text.match(/^- \[x\]/gm);
+                if (matches) potentialRemovedCount += matches.length;
+            });
+
+            if (potentialRemovedCount === 0) {
+                showToast("Nichts zu tun. Alles sauber! ✨");
+                return true;
+            }
+
+            // 2. 2-Button-Toast für die Bestätigung
+            // Wir nutzen hier das Format: msg, actionText, onAction, secondaryText
+            showToast(
+                `<span style="display: inline-block; margin-right: 30px;">Sollen ${potentialRemovedCount} erledigte Aufgaben wirklich entfernt werden?</span>`,
+                "Entfernen",
+                () => {
+                    // Ausführung bei Klick auf "Entfernen"
+                    const cleanedNotes = ntz.data.main.map(n => {
+                        const lines = n.text.split('\n');
+                        const remainingLines = lines.filter(line => !line.trim().startsWith('- [x]'));
+                        return { ...n, text: remainingLines.join('\n').trim() };
+                    }).filter(n => n.text !== "");
+
+                    ntz.data.main = cleanedNotes;
+                    saveToDisk();
+                    renderNotes();
+
+                    showToast(`🧹 Aufgaben wurden entfernt!`);
+                },
+                "Abbrechen" // Der vierte Parameter für den zweiten Button
+            );
+
+            return true;
+        }
+
+
+
+
+        function cmdUnpinAll() {
+            const pinnedCount = ntz.data.main.filter(n => n.pinned).length;
+
+            if (pinnedCount === 0) {
+                showToast("Keine angepinnten Notizen gefunden.");
+                return true;
+            }
+
+            showToast(
+                `${pinnedCount} Notizen lösen?`,
+                "Alle lösen",
+                () => {
+                    ntz.data.main.forEach(n => n.pinned = false);
+                    saveToDisk();
+                    renderNotes();
+                    showToast("📍 Alle Pins gelöst.");
+                },
+                "Abbrechen"
+            );
+            return true;
+        }
+
+        function cmdDeduplicate() {
+            const originalCount = ntz.data.main.length;
+            const seenTexts = new Set();
+
+            // Wir filtern das Array: Nur Notizen, deren Text wir noch nicht gesehen haben, bleiben
+            const uniqueNotes = ntz.data.main.filter(note => {
+                const text = note.text.trim();
+                if (seenTexts.has(text)) {
+                    return false; // Duplikat gefunden, wird gefiltert
+                }
+                seenTexts.add(text);
+                return true;
+            });
+
+            const diff = originalCount - uniqueNotes.length;
+
+            if (diff === 0) {
+                showToast("Keine Duplikate gefunden. ✨");
+                return true;
+            }
+
+            showToast(
+                `${diff} doppelte Notizen löschen?`,
+                "Löschen",
+                () => {
+                    ntz.data.main = uniqueNotes;
+                    saveToDisk();
+                    renderNotes();
+                    showToast(`🗑️ ${diff} Duplikate entfernt.`);
+                },
+                "Abbrechen"
+            );
+            return true;
+        }
+
+        function cmdSortReverse() {
+            ntz.data.main.reverse();
+            saveToDisk();
+            renderNotes();
+            showToast("🔃 Reihenfolge umgekehrt");
+            return true;
+        }
+
+        function cmdArchiveOld() {
+            const DAYS = 30; // Beispiel: 30 Tage
+            const threshold = Date.now() - (DAYS * 24 * 60 * 60 * 1000);
+            const toDelete = ntz.data.main.filter(n => n.created < threshold && !n.pinned).length;
+
+            if (toDelete === 0) {
+                showToast(`Keine ungepinnten Notizen älter als ${DAYS} Tage.`);
+                return true;
+            }
+
+            showToast(
+                `${toDelete} alte Notizen löschen?`,
+                "Löschen",
+                () => {
+                    ntz.data.main = ntz.data.main.filter(n => n.created >= threshold || n.pinned);
+                    saveToDisk();
+                    renderNotes();
+                    showToast("🧹 Archiv bereinigt.");
+                },
+                "Abbrechen"
+            );
+            return true;
+        }
+
+        function cmdSummary() {
+            const total = ntz.data.main.length;
+            const pinned = ntz.data.main.filter(n => n.pinned).length;
+            const chars = ntz.data.main.reduce((acc, n) => acc + n.text.length, 0);
+
+            showToast(`📊 ${total} Notizen (${pinned} 📌) | ~${Math.round(chars / 5)} Wörter`);
+            return true;
+        }
+
+        //restore backup
+
+        function cmdToggleFeedback() {
+            // Status umkehren
+            ntz.cfg.feedback = !ntz.cfg.feedback;
+            saveToDisk();
+
+            // Den Toast für die Bestätigung zeigen wir IMMER, 
+            // damit der User weiß, was gerade passiert ist.
+            const status = ntz.cfg.feedback ? "aktiviert ✅" : "deaktiviert 🤐";
+            showToast(`Feedback-Toasts wurden ${status}`);
+
+            return true;
+        }
+
+        function cmdResetConfig() {
+            showToast(
+                "Alle Einstellungen (Farbe, Sortierung, Feedback) zurücksetzen?",
+                "Zurücksetzen",
+                () => {
+                    // Wir kopieren nur den cfg-Teil aus dem Original-Template
+                    ntz.cfg = JSON.parse(JSON.stringify(ntz_template.cfg));
+
+                    // UI-Update: Theme sofort anwenden
+                    setTheme(ntz.cfg.theme);
+
+                    saveToDisk();
+                    renderNotes();
+
+                    showToast("⚙️ Einstellungen wurden zurückgesetzt.");
+                },
+                "Abbrechen"
+            );
+            return true;
+        }
+
+
+
+
+
+
+
+
+
+
+
+        function showLastChangelog() {
+            const msg = CHANGELOG[APP_VERSION] || "Neue Updates verfügbar!";
+            showToast(`<span class="toast-title">Update ${APP_VERSION}</span><hr class="toast-divider"><div style="margin: 15px;">${msg}</div>`, "ZURÜCK");
+        }
+
+        async function forceUpdateApp() {
+            if ('serviceWorker' in navigator) {
+                const regs = await navigator.serviceWorker.getRegistrations();
+                for (let r of regs) await r.unregister();
+            }
+            const names = await caches.keys();
+            for (let n of names) await caches.delete(n);
+            location.reload(true);
         }
 
         function showConsoleModal(title, content, actionText = "OK", actionFn = null) {
@@ -1788,32 +2451,14 @@
             showToast(html, actionText, actionFn);
         }
 
-        // --- SYSTEM LOGIK ---
-
-
-        function cmdLogs() {
-            const rows = Object.keys(CHANGELOG).sort().reverse().map(ver => ({
-                label: ver,
-                value: CHANGELOG[ver]
-            }));
-            showConsoleModal("📜 Versionsverlauf", rows, "OK", () => {
-                setTimeout(() => setConsoleFocus(), 100);
-            });
-            return true;
-        }
-
-        function cmdHelp() {
-            const helpBody = `
-        <div style="font-family: monospace; font-size: 0.85em;">
-            <b style="color:var(--accent-color)">System:</b> info, logs, cls, lock, reset<br>
-            <b style="color:var(--accent-color)">Tools:</b> test, clean, stats, export, import<br>
-            <b style="color:var(--accent-color)">Design:</b> nord, dark, light
-        </div>
-        <div style="font-size:0.75em; margin-top:10px; opacity:0.5; font-style:italic;">Psst: Versuch mal 'matrix'...</div>
-    `;
-            showConsoleModal("🛠️ Terminal Hilfe", helpBody, "OK", () => {
-                setTimeout(() => setConsoleFocus(), 100);
-            });
+        function cmdHelpBrowser() {
+            console.table([
+                { Befehl: 'lock', Effekt: 'Sperrt die Konsole sofort' },
+                { Befehl: 'godmode', Effekt: 'Aktiviert alle Privilegien' },
+                { Befehl: 'set [key] [val]', Effekt: 'Setzt einen Wert in ntz.data' },
+                { Befehl: 'add [key] [n]', Effekt: 'Erhöht einen Wert' }
+            ]);
+            showToast("Befehlsliste in der Browser-Konsole (F12)");
             return true;
         }
 
@@ -1836,36 +2481,6 @@
             return true;
         }
 
-        function cmdStorage() {
-            const keys = Object.keys(localStorage);
-            const raw = JSON.stringify(localStorage);
-            const sizeKB = (raw.length * 2 / 1024).toFixed(2);
-            const keyList = keys.map(k => `<code style="color:var(--accent-color)">${k}</code>`).join(", ");
-
-            const storageBody = `
-        <div style="font-size: 0.9em; line-height: 1.5;">
-            <b>Belegt:</b> ${sizeKB} KB / 5000 KB<br>
-            <b>Einträge:</b> ${keys.length}<br>
-            <div style="margin-top:8px;"><b>Keys:</b><br><span style="font-size:0.9em; opacity:0.8;">${keyList}</span></div>
-        </div>
-    `;
-            showConsoleModal("💾 Speicher-Analyse", storageBody, "OK", () => {
-                setTimeout(() => setConsoleFocus(), 100);
-            });
-            return true;
-        }
-
-        function cmdReset() {
-            // Hier nutzen wir direkt den Wrapper für die Warnung
-            const resetBody = `<div style="font-size: 0.9em;">Alle Notizen & Einstellungen werden unwiderruflich gelöscht.</div>`;
-
-            showConsoleModal("⚠️ Werkseinstellungen?", resetBody, "ABBRECHEN", null, "RESET", () => {
-                localStorage.clear();
-                location.reload();
-            });
-            return true;
-        }
-
         function cmdNote() {
             // Bleibt fast gleich, nutzt aber showToast ohne HTML für Erfolg
             const testNote = `### 📋 Markdown Test\nDies ist eine automatisch generierte Test-Notiz...\n\n- [ ] Offen\n- [x] Erledigt`;
@@ -1876,8 +2491,6 @@
             showToast("📋 Test-Notiz erstellt!"); // Einfacher Infotext braucht kein Modal
             return true;
         }
-
-
 
         function cmdToast() {
             const quotes = [
@@ -1899,105 +2512,13 @@
                 setTimeout(() => {
                     icon.innerText = "🔓";
                     icon.classList.remove('floating');
-                }, 2000);
+                }, 3500);
             }
 
             showToast(quote);
             return true;
         }
 
-        // --- TOOL LOGIK ---
-        function cmdClean() {
-            let allNotes = JSON.parse(localStorage.getItem('notes')) || [];
-            let removedCount = 0;
-
-            const cleanedNotes = allNotes.map(n => {
-                const lines = n.text.split('\n');
-                const remainingLines = lines.filter(line => {
-                    if (line.trim().startsWith('- [x]')) { removedCount++; return false; }
-                    return true;
-                });
-                return { ...n, text: remainingLines.join('\n').trim() };
-            }).filter(n => n.text !== "");
-
-            if (removedCount > 0) {
-                localStorage.setItem('notes', JSON.stringify(cleanedNotes));
-                renderNotes();
-                showToast(`🧹 ${removedCount} erledigte Aufgaben entfernt!`);
-            } else {
-                showToast("Nichts zu tun. Alles sauber! ✨");
-            }
-            return true;
-        }
-
-        function cmdStats() {
-            const allStatsNotes = JSON.parse(localStorage.getItem('notes')) || [];
-            let totalTodos = 0, doneTodos = 0;
-
-            allStatsNotes.forEach(n => {
-                totalTodos += (n.text.match(/- \[ \]/g) || []).length;
-                const done = (n.text.match(/- \[x\]/g) || []).length;
-                doneTodos += done;
-                totalTodos += done;
-            });
-
-            const percent = totalTodos > 0 ? Math.round((doneTodos / totalTodos) * 100) : 0;
-            const bar = "🟩".repeat(Math.round(percent / 10)) + "⬜".repeat(10 - Math.round(percent / 10));
-
-            // Das reine Inhalts-HTML (ohne Titel/Divider/Margin-Tricks)
-            const statsBody = `
-        <div style="font-size: 0.85em; opacity: 0.7;">Notizen insgesamt: ${allStatsNotes.length}</div>
-        <div style="margin: 10px 0;">
-            <div style="font-size: 1.1em; font-weight: bold;">${percent}% erledigt</div>
-            <div style="font-size: 0.9em; letter-spacing: 2px; margin-top: 4px;">${bar}</div>
-        </div>
-        <div style="font-size: 0.9em;">
-            <div style="opacity: 0.8;">[x] Erledigt: ${doneTodos}</div>
-            <div style="opacity: 0.8;">[ ] Offen: ${totalTodos - doneTodos}</div>
-        </div>
-    `;
-
-            showConsoleModal("📊 Aufgaben-Statistik", statsBody, "CONSOLE", () => {
-                setTimeout(() => document.getElementById('devConsole').focus(), 100);
-            });
-            return true;
-        }
-
-
-        function cmdGodMode() {
-            const isGod = localStorage.getItem('dev_godmode') === 'true';
-            localStorage.setItem('dev_godmode', !isGod);
-
-            const msg = !isGod
-                ? "🚀 GodMode AN<br><small>Menü bleibt bei Neustart offen.</small>"
-                : "🔒 GodMode AUS";
-
-            showToast(msg, "OK", () => {
-                setTimeout(() => document.getElementById('devConsole').focus(), 100);
-            });
-            return true;
-        }
-
-
-        function showLastChangelog() {
-            const msg = CHANGELOG[APP_VERSION] || "Neue Updates verfügbar!";
-            showToast(`<span class="toast-title">Update ${APP_VERSION}</span><hr class="toast-divider">${msg}`, "ZURÜCK");
-        }
-
-        async function forceUpdateApp() {
-            if ('serviceWorker' in navigator) {
-                const regs = await navigator.serviceWorker.getRegistrations();
-                for (let r of regs) await r.unregister();
-            }
-            const names = await caches.keys();
-            for (let n of names) await caches.delete(n);
-            location.reload(true);
-        }
-
-        function triggerShake(el) {
-            el.classList.add('shake-red');
-            setTimeout(() => el.classList.remove('shake-red'), 400);
-        }
 
     </script>
 </body>
