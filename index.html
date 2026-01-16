@@ -31,6 +31,10 @@
             /* (*1,5 .dev-menu-container, .toast, container) (/2 .note-text blockquote)*/
         }
 
+        [data-theme="anni"] {
+            --card-highlight: #fff;
+        }
+
         [data-theme="dark"] {
             --bg-color: #121212;
             --container-bg: #1e1e1e;
@@ -407,35 +411,52 @@
             height: 60vh;
         }
 
-        /* 8. TOASTS & FEEDBACK */
         .toast {
             position: fixed;
             bottom: 30px;
             left: 50%;
-            transform: translateX(-50%) translateY(550px);
+            transform: translate(-50%, 150%) scale(0.9);
+            opacity: 0;
             background: var(--container-bg);
             color: var(--text-color);
-            padding: 16px 20px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
             border: 1px solid var(--accent-color);
             z-index: 2000;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
             font-size: 0.95em;
-            white-space: pre-line;
             text-align: center;
-            overflow: hidden;
-            max-width: 380px !important;
-            width: 70%;
+            width: 90%;
+            max-width: 360px;
             box-sizing: border-box;
             border-radius: calc(var(--radius) * 1.5);
+            /* NEU: Begrenzung für lange Inhalte */
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .toast.show {
-            transform: translateX(-50%) translateY(0);
+            transform: translate(-50%, 0) scale(1);
+            opacity: 1;
+        }
+
+        .toast-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            text-align: left;
+            /* Zentriert den Block als Ganzes, Text darin bleibt links */
+            margin: 10px auto;
+            width: fit-content;
+            max-width: 100%;
+        }
+
+        .toast-content-wrapper div {
+            /* Erlaubt Zeilenumbrüche für lange Befehlsketten */
+            white-space: normal;
+            word-wrap: break-word;
         }
 
         .toast-title {
@@ -762,6 +783,19 @@
             // Modus & Suche wiederherstellen
             handleSearch(true);
             switchMode(localStorage.getItem('last_mode') || 'list');
+
+            // GodMode
+            if (localStorage.getItem('dev_godmode') === 'true') {
+                // 1. Konsole entsperren
+                isConsoleUnlocked = true;
+                const icon = document.getElementById('consoleIcon');
+                if (icon) icon.innerText = "🔓";
+                document.getElementById('devConsole')?.classList.add('unlocked');
+
+                // 2. Dev-Menü sofort anzeigen
+                const devMenu = document.getElementById('devMenu');
+                if (devMenu) devMenu.style.display = 'flex';
+            }
 
             // UI Details
             setRandomPlaceholder();
@@ -1289,8 +1323,11 @@
 
             clearTimeout(toastTimeout);
 
-            // HTML oder Text setzen // <br>, <small>
-            if (message.includes('<span') || message.includes('<div')) textSpan.innerHTML = message;
+            // HTML-Tags Erkennung
+            const htmlTags = ['<span', '<div', '<br', '<small', '<b', '<strong', '<hr', '<p'];
+            const isHTML = htmlTags.some(tag => message.toLowerCase().includes(tag));
+            // Ausgabetextformat richtig setzen
+            if (isHTML) textSpan.innerHTML = message;
             else textSpan.innerText = message;
 
             // Reset
@@ -1604,7 +1641,7 @@
             // Falls Befehle Argumente bräuchten, könnte man hier cmd.split(' ') nutzen
             switch (cmd) {
                 // --- DESIGN ---
-                case 'nord':
+                case 'nord': // Easter Egg Theme
                 case 'dark':
                 case 'light':
                     setTheme(cmd);
@@ -1612,25 +1649,25 @@
                     return true;
 
                 // --- SYSTEM ---
-                case 'info': return cmdInfo();
-                case 'logs': return cmdLogs();
                 case 'help': return cmdHelp();
-                case 'cls': return cmdCls();
-                case 'lock': lockConsole(); showToast("Konsole gesperrt"); return true;
+                case 'logs': return cmdLogs();
                 case 'reset': return cmdReset();
+                case 'lock': lockConsole(); showToast("Konsole gesperrt"); return true;
 
                 // --- TOOLS ---
-                case 'test': return cmdTest();
+                case 'note': return cmdNote();
                 case 'clean': return cmdClean();
-                case 'stats': return cmdStats();
-                case 'export': exportNotes(); return false;
-                case 'import': importNotes(); return false;
+                case 'export': return cmdExport();
+                case 'import': return cmdImport();
 
                 // --- EASTER EGG ---
                 case 'matrix': return cmdMatrix();
 
                 // --- NEU ---
                 case 'storage': return cmdStorage();
+                case 'godmode': return cmdGodMode();
+                case 'toast': return cmdToast();
+                case 'stats': return cmdStats();
 
                 default:
                     showToast("Unbekannter Befehl: " + cmd);
@@ -1638,70 +1675,128 @@
             }
         }
 
-        // --- SYSTEM LOGIK ---
-        function cmdInfo() {
-            const notesCount = (JSON.parse(localStorage.getItem('notes')) || []).length;
-            const currentTheme = localStorage.getItem('note_theme') || 'light';
-            const lastMode = localStorage.getItem('last_mode') || 'list';
-            const isSearchActive = localStorage.getItem('search_active') === 'true';
-
-            const infoHTML = `
-        <span class="toast-title">ℹ️ System Info</span>
-        <hr class="toast-divider">
-        <div style="text-align: left; font-size: 0.9em; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
-            <b style="color:var(--accent-color)">Version:</b> <span>${APP_VERSION}</span>
-            <b style="color:var(--accent-color)">Notizen:</b> <span>${notesCount}</span>
-            <b style="color:var(--accent-color)">Theme:</b> <span>${currentTheme}</span>
-            <b style="color:var(--accent-color)">Suche bei Start:</b> <span>${isSearchActive ? "✅ Aktiv" : "❌ Inaktiv"}</span>
-            <b style="color:var(--accent-color)">Modus bei Start:</b> <span>${lastMode}</span>
-        </div>`;
-            showToast(infoHTML, "OK", () => { // Diese Aktion wird ausgeführt, wenn OK geklickt wird
-                setTimeout(() => {
-                    const input = document.getElementById('devConsole');
-                    if (input) input.focus();
-                }, 100); // 100ms Puffer für hideToast()
-            });
-            return true;
+        function setConsoleFocus() {
+            const input = document.getElementById('devConsole');
+            if (input) input.focus();
         }
 
+        function showConsoleModal(title, content, actionText = "OK", actionFn = null) {
+            let html = `<span class="toast-title">${title}</span><hr class="toast-divider">`;
+
+            // Wrapper für kompaktes Design ohne Gap-Probleme
+            html += `<div class="toast-content-wrapper">`;
+
+            if (Array.isArray(content)) {
+                // Falls ein Array kommt (für Logs)
+                content.forEach(row => {
+                    html += `
+                <div style="margin-bottom: 8px;">
+                    <div style="font-weight: bold; color: var(--accent-color); line-height: 1.1;">${row.label}</div>
+                    <div style="font-size: 0.85em; opacity: 0.8; line-height: 1.2;">${row.value}</div>
+                </div>`;
+                });
+            } else {
+                // Falls fertiges HTML kommt (für Stats)
+                html += content;
+            }
+
+            html += `</div>`;
+
+            showToast(html, actionText, actionFn);
+        }
+
+        // --- SYSTEM LOGIK ---
+
+
         function cmdLogs() {
-            let logHTML = `<span class="toast-title">📜 Versionsverlauf</span><hr class="toast-divider">`;
-            Object.keys(CHANGELOG).sort().reverse().forEach(ver => {
-                logHTML += `
-            <div style="margin-bottom: 5px;">
-                <div style="font-size: 1.2em; font-weight: bold; color: var(--accent-color);">${ver}</div>
-                <div style="font-size: 0.9em; opacity: 0.8;">${CHANGELOG[ver]}</div>
-            </div>`;
-            });
-            showToast(logHTML, "OK", () => { // Diese Aktion wird ausgeführt, wenn OK geklickt wird
-                setTimeout(() => {
-                    const input = document.getElementById('devConsole');
-                    if (input) input.focus();
-                }, 100); // 100ms Puffer für hideToast()
+            const rows = Object.keys(CHANGELOG).sort().reverse().map(ver => ({
+                label: ver,
+                value: CHANGELOG[ver]
+            }));
+            showConsoleModal("📜 Versionsverlauf", rows, "OK", () => {
+                setTimeout(() => setConsoleFocus(), 100);
             });
             return true;
         }
 
         function cmdHelp() {
-            showToast(`
-        <span class="toast-title">🛠️ Terminal Hilfe</span>
-        <hr class="toast-divider">
-        <div style="text-align: left; font-family: monospace; font-size: 0.85em; width: 100%;">
+            const helpBody = `
+        <div style="font-family: monospace; font-size: 0.85em;">
             <b style="color:var(--accent-color)">System:</b> info, logs, cls, lock, reset<br>
             <b style="color:var(--accent-color)">Tools:</b> test, clean, stats, export, import<br>
             <b style="color:var(--accent-color)">Design:</b> nord, dark, light
         </div>
-        <div style="font-size:0.7em; margin-top:5px; opacity:0.4;">Psst: Versuch mal 'matrix'...</div>
-    `, "OK", () => { // Diese Aktion wird ausgeführt, wenn OK geklickt wird
-                setTimeout(() => {
-                    const input = document.getElementById('devConsole');
-                    if (input) input.focus();
-                }, 100); // 100ms Puffer für hideToast()
+        <div style="font-size:0.75em; margin-top:10px; opacity:0.5; font-style:italic;">Psst: Versuch mal 'matrix'...</div>
+    `;
+            showConsoleModal("🛠️ Terminal Hilfe", helpBody, "OK", () => {
+                setTimeout(() => setConsoleFocus(), 100);
             });
             return true;
         }
 
-        function cmdCls() {
+        function cmdMatrix() {
+            const spaceQuotes = ["In einer weit, weit entfernten Galaxis...", "Houston, wir haben kein Problem.", "Sterne funkeln, Notizen bleiben."];
+            const randomQuote = spaceQuotes[Math.floor(Math.random() * spaceQuotes.length)];
+            const mainContainer = document.getElementById('main-container');
+
+            document.body.classList.add('space-mode');
+            mainContainer.classList.add('blur-active');
+
+            const matrixBody = `
+        <div class="floating" style="font-size: 2.5em; margin: 10px 0; width: 100%; text-align: center;">🚀</div>
+        <div style="font-style: italic; text-align: center; width: 100%;">"${randomQuote}"</div>
+    `;
+            showConsoleModal("Space Mode", matrixBody, "LANDEN", () => {
+                document.body.classList.remove('space-mode');
+                mainContainer.classList.remove('blur-active');
+            });
+            return true;
+        }
+
+        function cmdStorage() {
+            const keys = Object.keys(localStorage);
+            const raw = JSON.stringify(localStorage);
+            const sizeKB = (raw.length * 2 / 1024).toFixed(2);
+            const keyList = keys.map(k => `<code style="color:var(--accent-color)">${k}</code>`).join(", ");
+
+            const storageBody = `
+        <div style="font-size: 0.9em; line-height: 1.5;">
+            <b>Belegt:</b> ${sizeKB} KB / 5000 KB<br>
+            <b>Einträge:</b> ${keys.length}<br>
+            <div style="margin-top:8px;"><b>Keys:</b><br><span style="font-size:0.9em; opacity:0.8;">${keyList}</span></div>
+        </div>
+    `;
+            showConsoleModal("💾 Speicher-Analyse", storageBody, "OK", () => {
+                setTimeout(() => setConsoleFocus(), 100);
+            });
+            return true;
+        }
+
+        function cmdReset() {
+            // Hier nutzen wir direkt den Wrapper für die Warnung
+            const resetBody = `<div style="font-size: 0.9em;">Alle Notizen & Einstellungen werden unwiderruflich gelöscht.</div>`;
+
+            showConsoleModal("⚠️ Werkseinstellungen?", resetBody, "ABBRECHEN", null, "RESET", () => {
+                localStorage.clear();
+                location.reload();
+            });
+            return true;
+        }
+
+        function cmdNote() {
+            // Bleibt fast gleich, nutzt aber showToast ohne HTML für Erfolg
+            const testNote = `### 📋 Markdown Test\nDies ist eine automatisch generierte Test-Notiz...\n\n- [ ] Offen\n- [x] Erledigt`;
+            let notes = JSON.parse(localStorage.getItem('notes')) || [];
+            notes.unshift({ id: Date.now(), text: testNote, pinned: true, created: Date.now() });
+            localStorage.setItem('notes', JSON.stringify(notes));
+            renderNotes();
+            showToast("📋 Test-Notiz erstellt!"); // Einfacher Infotext braucht kein Modal
+            return true;
+        }
+
+
+
+        function cmdToast() {
             const quotes = [
                 "🛸 Cockpit gereinigt...",
                 "✨ Sternenstaub weggewischt...",
@@ -1719,7 +1814,6 @@
                 icon.innerText = "🚀";
                 icon.classList.add('floating'); // Deine CSS Klasse nutzen!
                 setTimeout(() => {
-                    icon.innerText = isConsoleUnlocked ? "🔓" : "🔒";
                     icon.classList.remove('floating');
                 }, 2000);
             }
@@ -1766,97 +1860,39 @@
             const percent = totalTodos > 0 ? Math.round((doneTodos / totalTodos) * 100) : 0;
             const bar = "🟩".repeat(Math.round(percent / 10)) + "⬜".repeat(10 - Math.round(percent / 10));
 
-            showToast(`
-        <span class="toast-title">📊 Aufgaben-Statistik</span>
-        <hr class="toast-divider">
-        <div style="font-size: 1.1em; margin-bottom: 5px;">${percent}% erledigt</div>
-        <div style="font-size: 0.8em; letter-spacing: 2px; margin-bottom: 10px;">${bar}</div>
-        <div style="font-size: 0.85em; opacity: 0.8;">Offen: ${totalTodos - doneTodos} | Erledigt: ${doneTodos}</div>
-    `, "WEITER SO!");
-            return false;
-        }
-
-        function cmdMatrix() {
-            const spaceQuotes = ["In einer weit, weit entfernten Galaxis...", "Houston, wir haben kein Problem.", "Sterne funkeln, Notizen bleiben."];
-            const randomQuote = spaceQuotes[Math.floor(Math.random() * spaceQuotes.length)];
-            const mainContainer = document.getElementById('main-container');
-
-            document.body.classList.add('space-mode');
-            mainContainer.classList.add('blur-active');
-
-            showToast(`
-        <div class="floating" style="font-size: 2.5em; margin-bottom: 10px;">🚀</div>
-        <span class="toast-title">Space Mode</span>
-        <hr class="toast-divider"><div style="font-style: italic;">"${randomQuote}"</div>
-    `, "LANDEN", () => {
-                document.body.classList.remove('space-mode');
-                mainContainer.classList.remove('blur-active');
-            });
-            return true;
-        }
-
-        function cmdTest() {
-            const testNote = `### 🚀 Markdown Test
-Dies ist eine automatisch generierte Test-Notiz.
-- [ ] Offene Aufgabe
-- [x] Erledigte Aufgabe
-- Liste Punkt 1
-- Liste Punkt 2
-
-> "Das ist ein Zitat-Block für wichtige Gedanken."
-
----
-**Fett**, *Kursiv* und ~~Durchgestrichen~~ funktioniert auch!`;
-
-            let notes = JSON.parse(localStorage.getItem('notes')) || [];
-            notes.unshift({
-                id: Date.now(),
-                text: testNote,
-                pinned: true,
-                created: Date.now()
-            });
-            localStorage.setItem('notes', JSON.stringify(notes));
-            renderNotes();
-            showToast("🚀 Test-Notiz erstellt!");
-            return true;
-        }
-
-        function cmdReset() {
-            showToast(
-                "<span>⚠️ Werkseinstellungen?</span><br><small>Alle Notizen & Einstellungen werden gelöscht.</small>",
-                "ABBRECHEN", null,
-                "RESET", () => {
-                    localStorage.clear();
-                    location.reload();
-                }
-            );
-            return true;
-        }
-
-        function cmdStorage() {
-    const keys = Object.keys(localStorage);
-    const raw = JSON.stringify(localStorage);
-    const sizeKB = (raw.length * 2 / 1024).toFixed(2);
-    
-    let keyList = keys.map(k => `<code style="color:var(--accent-color)">${k}</code>`).join(", ");
-
-    showToast(`
-        <span class="toast-title">💾 Speicher-Analyse</span>
-        <hr class="toast-divider">
-        <div style="text-align: left; font-size: 0.8em;">
-            <b>Belegt:</b> ${sizeKB} KB / 5000 KB<br>
-            <b>Einträge:</b> ${keys.length}<br>
-            <div style="margin-top:5px; line-height:1.4;"><b>Keys:</b> ${keyList}</div>
+            // Das reine Inhalts-HTML (ohne Titel/Divider/Margin-Tricks)
+            const statsBody = `
+        <div style="font-size: 0.85em; opacity: 0.7;">Notizen insgesamt: ${allStatsNotes.length}</div>
+        <div style="margin: 10px 0;">
+            <div style="font-size: 1.1em; font-weight: bold;">${percent}% erledigt</div>
+            <div style="font-size: 0.9em; letter-spacing: 2px; margin-top: 4px;">${bar}</div>
         </div>
-    `, "OK", () => {
-        setTimeout(() => document.getElementById('devConsole').focus(), 100);
-    });
-    return true;
-}
+        <div style="font-size: 0.9em;">
+            <div style="opacity: 0.8;">[x] Erledigt: ${doneTodos}</div>
+            <div style="opacity: 0.8;">[ ] Offen: ${totalTodos - doneTodos}</div>
+        </div>
+    `;
+
+            showConsoleModal("📊 Aufgaben-Statistik", statsBody, "CONSOLE", () => {
+                setTimeout(() => document.getElementById('devConsole').focus(), 100);
+            });
+            return true;
+        }
 
 
+        function cmdGodMode() {
+            const isGod = localStorage.getItem('dev_godmode') === 'true';
+            localStorage.setItem('dev_godmode', !isGod);
 
+            const msg = !isGod
+                ? "🚀 GodMode AN<br><small>Menü bleibt bei Neustart offen.</small>"
+                : "🔒 GodMode AUS";
 
+            showToast(msg, "OK", () => {
+                setTimeout(() => document.getElementById('devConsole').focus(), 100);
+            });
+            return true;
+        }
 
 
         function showLastChangelog() {
