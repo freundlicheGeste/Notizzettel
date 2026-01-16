@@ -31,7 +31,7 @@
             /* (*1,5 .dev-menu-container, .toast, container) (/2 .note-text blockquote)*/
         }
 
-        [data-theme="lights"] {
+        [data-theme="snoopy"] {
             --card-highlight: #fff;
         }
 
@@ -66,13 +66,51 @@
             --quote-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.4), 1px 1px 1px rgba(255, 255, 255, 0.05);
         }
 
+        /* Toolbar-Reihenfolge nur im Snoopy-Theme */
+        [data-theme="snoopy"] .btn-bold {
+            order: 1;
+        }
+
+        [data-theme="snoopy"] .btn-todo {
+            order: 2;
+        }
+
+        [data-theme="snoopy"] .btn-italic {
+            order: 3;
+        }
+
+        [data-theme="snoopy"] .btn-strike {
+            order: 4;
+        }
+
+        [data-theme="snoopy"] .btn-list {
+            order: 5;
+        }
+
+        [data-theme="snoopy"] .btn-h3 {
+            order: 6;
+        }
+
+        [data-theme="snoopy"] .btn-quote {
+            order: 7;
+        }
+
+        [data-theme="snoopy"] .btn-hr {
+            order: 8;
+        }
+
+        [data-theme="snoopy"] .small-btn {
+            background: #fff5e6;
+        }
+
+
         /* 2. BASIS-SETUP */
 
-        /* Fix für die Breite aller Haupt-Elemente */
         #main-container,
         .search-wrapper,
         .list-container,
         div[style*="max-width: 400px"] {
+            /* Breite aller Haupt-Elemente */
             /* Erfasst auch den Versions-Header */
             width: 100% !important;
             max-width: var(--app-max-width) !important;
@@ -87,13 +125,6 @@
 
         *:focus {
             outline: none !important;
-        }
-
-        /* 1. GLOBALE BUTTON-REAKTION (Feedback für alle) */
-        button:active {
-            transform: scale(0.96);
-            opacity: 0.8;
-            transition: transform 0.1s;
         }
 
         body {
@@ -126,7 +157,16 @@
             margin-bottom: 20px;
         }
 
+
         /* 3. FORMULAR-ELEMENTE & BUTTONS */
+
+        button:active {
+            /* Button Feedback (wenn gedrückt) */
+            transform: scale(0.96);
+            opacity: 0.8;
+            transition: transform 0.1s;
+        }
+
         textarea {
             width: 100%;
             height: 20vh;
@@ -171,13 +211,12 @@
             gap: 8px;
             margin-top: 10px;
             align-items: stretch;
-            /* Sorgt für exakt gleiche Höhe */
+            /* Sorgt für exakt gleiche Höhe (Notiz "Änderung speichern" "Abbrechen") */
         }
 
         .btn-save,
         .btn-cancel {
             padding: 15px;
-            /* Gleiches Padding = gleiche Höhe */
             border: none;
             font-weight: bold;
             cursor: pointer;
@@ -201,13 +240,9 @@
             color: white;
         }
 
-        /* Ein wenig Feedback beim Drücken */
-        .btn-save:active,
-        .btn-cancel:active {
-            opacity: 0.8;
-        }
 
         /* 4. SUCHLEISTE */
+
         .search-wrapper {
             margin-top: 15px;
             width: 100%;
@@ -229,7 +264,9 @@
             box-shadow: 0 0 5px rgba(255, 140, 0, 0.2);
         }
 
+
         /* 5. NOTIZEN-LISTE & ITEMS */
+
         .list-container {
             margin-top: 25px;
             width: 100%;
@@ -261,7 +298,7 @@
         }
 
         .action-btns {
-            /* Buttons innerhalb der Notiz */
+            /* Buttons innerhalb jeder Notiz */
             display: flex;
             gap: 8px;
         }
@@ -284,21 +321,12 @@
             padding-top: 4px;
         }
 
-        /* LINIE OBEN
-        .note-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            border-top: 2px solid rgba(0, 0, 0, 0.05);
-            padding-top: 4px;
-        }*/
         .note-actions {
             display: flex;
             justify-content: space-between;
             /* Datum links, Buttons rechts */
             align-items: center;
             border-bottom: 2px solid rgba(0, 0, 0, 0.05);
-            /* Linie jetzt UNTEN */
             padding-bottom: 6px;
             margin-bottom: 10px;
         }
@@ -323,19 +351,15 @@
             flex-grow: 1;
         }
 
-        /* KOMPAKT OBEN MODUS
-        .note-item.compact .note-actions {
-            width: auto;
-            border-top: none;
-            padding-top: 0;
-        }*/
         .note-item.compact .note-actions {
             border-bottom: none;
             margin-bottom: 0;
             padding-bottom: 0;
         }
 
+
         /* 6. MARKDOWN STYLING */
+
         .note-text h3 {
             display: block;
             margin: 10px 0 2px 0 !important;
@@ -401,7 +425,9 @@
             transform: scaleX(-1);
         }
 
+
         /* 7. SCRATCHPAD */
+
         #scratchpad-mode {
             display: none;
             width: 100%;
@@ -410,6 +436,9 @@
         .full-textarea {
             height: 60vh;
         }
+
+
+        /* 8. TOAST */
 
         .toast {
             position: fixed;
@@ -432,7 +461,7 @@
             max-width: 360px;
             box-sizing: border-box;
             border-radius: calc(var(--radius) * 1.5);
-            /* NEU: Begrenzung für lange Inhalte */
+            /* Begrenzung für lange Inhalte */
             max-height: 80vh;
             overflow-y: auto;
         }
@@ -513,7 +542,9 @@
             border-radius: var(--radius);
         }
 
+
         /* 9. DEV-MENÜ & KONSOLE */
+
         .dev-menu-container {
             display: none;
             margin-top: 20px;
@@ -572,7 +603,7 @@
             top: 50%;
             transform: translateY(-50%);
             font-size: 1.7em;
-            margin-right: 5px;
+            margin-right: 7px;
         }
 
         .dev-console-input.unlocked {
@@ -580,7 +611,9 @@
             box-shadow: 0 0 5px rgba(163, 190, 140, 0.5);
         }
 
+
         /* 10. ANIMATIONEN & EASTER EGGS */
+
         @keyframes shake-red {
 
             0%,
@@ -678,22 +711,22 @@
             </div>
             <textarea id="noteInput" rows="2" placeholder="Neue Notiz..."></textarea>
             <div style="display: flex; gap: 8px; margin: 10px; justify-content: center;">
-                <button class="small-btn" onmousedown="event.preventDefault()" onclick="insertMarkdown('bold')"
+                <button class="small-btn btn-bold" onmousedown="event.preventDefault()" onclick="insertMarkdown('bold')"
                     title="**fett**"><b>B</b></button>
-                <button class="small-btn" onmousedown="event.preventDefault()" onclick="insertMarkdown('italic')"
-                    title="*kursiv*"><i>I</i></button>
-                <button class="small-btn" onmousedown="event.preventDefault()" onclick="insertMarkdown('strike')"
-                    title="~~durch~~"><del>S</del></button>
-                <button class="small-btn" onmousedown="event.preventDefault()" onclick="insertMarkdown('list')"
+                <button class="small-btn btn-italic" onmousedown="event.preventDefault()"
+                    onclick="insertMarkdown('italic')" title="*kursiv*"><i>I</i></button>
+                <button class="small-btn btn-strike" onmousedown="event.preventDefault()"
+                    onclick="insertMarkdown('strike')" title="~~durch~~"><del>S</del></button>
+                <button class="small-btn btn-list" onmousedown="event.preventDefault()" onclick="insertMarkdown('list')"
                     title="- Liste">•</button>
 
-                <button class="small-btn" onmousedown="event.preventDefault()" onclick="insertMarkdown('h3')"
+                <button class="small-btn btn-h3" onmousedown="event.preventDefault()" onclick="insertMarkdown('h3')"
                     title="Überschrift">H</button>
-                <button class="small-btn" onmousedown="event.preventDefault()" onclick="insertMarkdown('todo')"
+                <button class="small-btn btn-todo" onmousedown="event.preventDefault()" onclick="insertMarkdown('todo')"
                     title="Checkliste">☑</button>
-                <button class="small-btn" onmousedown="event.preventDefault()" onclick="insertMarkdown('quote')"
-                    title="Zitat">”</button>
-                <button class="small-btn" onmousedown="event.preventDefault()" onclick="insertMarkdown('hr')"
+                <button class="small-btn btn-quote" onmousedown="event.preventDefault()"
+                    onclick="insertMarkdown('quote')" title="Zitat">”</button>
+                <button class="small-btn btn-hr" onmousedown="event.preventDefault()" onclick="insertMarkdown('hr')"
                     title="Trennlinie">―</button>
             </div>
 
@@ -738,7 +771,7 @@
             <h3 style="margin:0;">Notizsammlung</h3>
             <div style="display: flex; gap: 5px;">
                 <button id="searchToggle" class="small-btn" onclick="handleSearch()" title="Suche">🔍</button>
-                <button id="sortToggle" class="small-btn" onclick="toggleSortMode()">↕️</button>
+                <button id="sortToggle" class="small-btn" onclick="toggleSortMode()" title="Sortier-Modus">↕️</button>
             </div>
         </div>
         <div class="search-wrapper" id="searchBar" style="margin-bottom: 20px; display: none;">
@@ -758,13 +791,11 @@
 
     <script>
 
-        /* ==========================================================================
-        NOTIZ-ZETTEL JAVASCRIPT LOGIK (v1.0.3)
-        ========================================================================== */
-
         // --- 1. GLOBALE KONSTANTEN & STATE ---
-        const APP_VERSION = "v1.0.3";
+
+        const APP_VERSION = "v1.0.4";
         const CHANGELOG = {
+            "v1.0.4": "SilentMode für Info Toasts",
             "v1.0.3": "Space-Mode, Stats & UI Refactoring",
             "v1.0.2": "Entwickler-Modus & Suchleiste",
             "v1.0.1": "Markdown Support",
@@ -773,16 +804,20 @@
 
         let currentEditId = null; // !=null, wenn wir gerade eine Notiz bearbeiten
         let toastTimeout;
+        let silentMode = false; // Info Toasts unterdrücken
+
 
         // --- 2. INITIALISIERUNG ---
+
         window.onload = () => {
             // Theme laden
             const savedTheme = localStorage.getItem('note_theme') || 'light';
             setTheme(savedTheme);
 
-            // Modus & Suche wiederherstellen
+            // Modus, Sortierung & Suche wiederherstellen
             handleSearch(true);
             switchMode(localStorage.getItem('last_mode') || 'list');
+            toggleSortMode(localStorage.getItem('sort_mode') || 'date');
 
             // GodMode
             if (localStorage.getItem('dev_godmode') === 'true') {
@@ -792,15 +827,17 @@
                 if (icon) icon.innerText = "🔓";
                 document.getElementById('devConsole')?.classList.add('unlocked');
 
-                // 2. Dev-Menü sofort anzeigen
+                // 2. Dev-Menü anzeigen
                 const devMenu = document.getElementById('devMenu');
                 if (devMenu) devMenu.style.display = 'flex';
             }
 
             // UI Details
             setRandomPlaceholder();
-            checkUpdate();
             renderNotes();
+
+            // Update check
+            checkUpdate();
 
             // Service Worker
             if ('serviceWorker' in navigator) {
@@ -814,21 +851,41 @@
             // erster Check für Erstinstallation, da lastVersion null
             if (lastVersion && lastVersion !== APP_VERSION) {
                 const nachricht = CHANGELOG[APP_VERSION] || "Neue Funktionen verfügbar!";
-                showUpdateBanner(`Update ${APP_VERSION}:\n\n${nachricht}`);
+                showUpdateToast(`Update ${APP_VERSION}:\n\n${nachricht}`);
             }
             localStorage.setItem('note_app_version', APP_VERSION);
         }
 
+        function showUpdateToast(msg) {
+            let formattedMsg = "";
+            const parts = msg.split('\n\n');
+
+            if (parts.length > 1) {
+                const title = parts[0];
+                const content = parts.slice(1).join('\n\n');
+                formattedMsg = `
+                        <span class="toast-title">${title}</span>
+                        <hr class="toast-divider">
+                        <div style="width: 100%; text-align: center;">${content}</div>
+                    `;
+            } else {
+                formattedMsg = msg;
+            }
+            showToast(formattedMsg);
+        }
+
+
         // --- 3. THEME & UI NAVIGATION ---
-        function setTheme(t) {
-            document.documentElement.setAttribute('data-theme', t);
-            localStorage.setItem('note_theme', t);
+
+        function setTheme(themeName) {
+            document.documentElement.setAttribute('data-theme', themeName);
+            localStorage.setItem('note_theme', themeName);
 
             // Theme-Farbe für die Browser-Leiste anpassen
             const metaTheme = document.querySelector('meta[name="theme-color"]');
             if (metaTheme) {
                 const colors = { 'nord': '#2e3440', 'dark': '#121212', 'light': '#ff8c00' };
-                metaTheme.setAttribute('content', colors[t] || colors.light);
+                metaTheme.setAttribute('content', colors[themeName] || colors.light);
             }
         }
 
@@ -842,7 +899,7 @@
             }
         }
 
-        function switchMode(mode) {
+        function switchMode(mode) { /* Toggle Notizen < > Scratchpad */
             // Falls man gerade editiert und den Modus wechselt: Abbruch des Editiermodus
             currentEditId = null;
             if (document.querySelector('.btn-save')) {
@@ -865,7 +922,9 @@
             localStorage.setItem('last_mode', mode);
         }
 
-        // --- 4. NOTIZ-KERNFUNKTIONEN (CRUD) ---
+
+        // --- 4. NOTIZ-BEARBEITUNG (Kernfunktionen) ---
+
         function saveNote() {
             const input = document.getElementById('noteInput');
             const text = input.value.trim();
@@ -874,21 +933,20 @@
             // Hier 'let' statt 'const', damit wir das Array überschreiben können
             let notes = JSON.parse(localStorage.getItem('notes')) || [];
 
-            if (currentEditId) {
-                // Bearbeitungs-Modus
+            // Für den Toast merken
+            const isEditMode = Boolean(currentEditId);
+
+            if (currentEditId) { // Bearbeitungs-Modus
                 notes = notes.map(n => n.id === currentEditId ? { ...n, text: text } : n);
-
-                // Wichtig: ID zurücksetzen
+                // ID zurücksetzen
                 currentEditId = null;
-
                 // Button-Text zurücksetzen
                 const saveBtn = document.querySelector('.btn-save');
                 if (saveBtn) saveBtn.innerText = "Hinzufügen";
                 // Abbrechen Button wieder entfernen
                 const cancelBtn = document.getElementById('cancelEditBtn');
                 if (cancelBtn) cancelBtn.style.display = 'none';
-            } else {
-                // Neuerstellungs-Modus
+            } else { // Neuerstellungs-Modus
                 notes.push({
                     id: Date.now(),
                     text: text,
@@ -897,17 +955,19 @@
                 });
             }
 
-            // Speichern und UI aktualisieren
+            // Notiz speichern
             localStorage.setItem('notes', JSON.stringify(notes));
-
-            // Input leeren
+            // Notizfeld leeren
             input.value = '';
             // UI neu zeichnen
             renderNotes();
             // Tastatur am Handy schließen
             input.blur();
 
-            showToast("Notiz gespeichert!");
+            // 🔔 Unterschiedliche Toasts
+            if (!silentMode) {
+                showToast(isEditMode ? "Notiz aktualisiert ✏️" : "Notiz erstellt ✅");
+            }
         }
 
         function editNote(id) {
@@ -973,168 +1033,12 @@
 
                     // Kleiner Timeout, damit der Browser merkt, dass ein NEUER Toast kommt
                     setTimeout(() => {
-                        showToast("✅ Wiederhergestellt!");
+                        if (!silentMode) {
+                            showToast("✅ Wiederhergestellt!");
+                        }
                     }, 100);
                 });
             }
-        }
-
-        function togglePin(id) {
-            let notes = JSON.parse(localStorage.getItem('notes')) || [];
-            notes = notes.map(n => {
-                if (n.id === id) n.pinned = !n.pinned;
-                return n;
-            });
-            localStorage.setItem('notes', JSON.stringify(notes));
-            renderNotes();
-        }
-
-        function renderNotes(searchQuery = '') {
-            const list = document.getElementById('noteList');
-            let notes = JSON.parse(localStorage.getItem('notes')) || [];
-
-            // Sortiermodus: chronologisch oder alphabetisch
-            const sortMode = localStorage.getItem('sort_mode') || 'manual';
-            document.getElementById('sortToggle').innerText = sortMode === 'alpha' ? '🔤' : '↕️';
-
-            // Sichtbarkeit von Buttons (Suche, Sortierung) und Suchfeld erst ab 5 Notizen
-            // --- Sichtbarkeit von Tools & Suchleiste berechnen ---
-            const toolsVisible = notes.length >= 5;
-            const searchBar = document.getElementById('searchBar');
-            const searchBtn = document.getElementById('searchToggle');
-            const sortBtn = document.getElementById('sortToggle');
-            const listHeader = document.getElementById('listHeader');
-
-            // Buttons (Suche/Sortierung) nur anzeigen, wenn genug Notizen vorhanden sind
-            if (searchBtn) searchBtn.style.display = toolsVisible ? 'flex' : 'none';
-            if (sortBtn) sortBtn.style.display = toolsVisible ? 'flex' : 'none';
-
-            // Suchleiste Logik:
-            // Sie wird nur angezeigt, wenn (genug Notizen da sind) UND (der User sie aktiv eingeschaltet hat)
-            const userPrefActive = localStorage.getItem('search_active') === 'true';
-
-            if (searchBar) {
-                searchBar.style.display = (toolsVisible && userPrefActive) ? 'block' : 'none';
-            }
-
-            // Header anzeigen, wenn Notizen da sind oder gerade gesucht wird
-            if (listHeader) {
-                listHeader.style.display = (notes.length > 0 || searchQuery) ? 'flex' : 'none';
-            }
-
-            // Falls keine Notizen da sind, Header komplett weg (außer bei aktiver Suche)
-            listHeader.style.display = (notes.length > 0 || searchQuery) ? 'flex' : 'none';
-
-            // In Notizen suchen und nur Notizen mit Suchbegriff anzeigen
-            if (searchQuery) {
-                const q = searchQuery.toLowerCase();
-                notes = notes.filter(n => n.text.toLowerCase().includes(q));
-            }
-            // Falls keine Notizen mit Suchbegriff
-            if (notes.length === 0) {
-                list.innerHTML = searchQuery ? '<p style="text-align:center; margin-top: 30px; opacity:0.5;">Keine Treffer gefunden.</p>' : '';
-                return;
-            }
-
-            // Sortier-Modi
-            notes.sort((a, b) => {
-                if (a.pinned && !b.pinned) return -1;
-                if (!a.pinned && b.pinned) return 1;
-
-                if (sortMode === 'alpha') {
-                    // Entfernt Markdown-Sonderzeichen am Zeilenanfang für den Vergleich
-                    const cleanForSort = (str) => {
-                        return str.toLowerCase()
-                            .replace(/^###\s+/, '')         // Überschrift entfernen
-                            .replace(/^>\s+/, '')           // Zitat-Zeichen entfernen
-                            .replace(/^-\s+/, '')           // Listen-Strich entfernen
-                            .replace(/^-\s\[\s\]\s+/, '')   // Checkbox offen entfernen
-                            .replace(/^-\s\[x\]\s+/, '')    // Checkbox erledigt entfernen
-                            .replace(/^\*\*/, '')           // Fett-Start entfernen
-                            .trim();                        // Leerzeichen am Anfang und Ende des Strings entfernen
-                    };
-
-                    const textA = cleanForSort(a.text);
-                    const textB = cleanForSort(b.text);
-
-                    return textA.localeCompare(textB);
-                }
-
-                return b.created - a.created;
-            });
-            // CODE NUR BIS HIER DURCHGELESEN
-            list.innerHTML = '';
-            notes.forEach(n => {
-
-                const renderedContent = parseMarkdown(n.text, n.id);
-
-                const card = document.createElement('div');
-
-                // LOGIK: Ist die Notiz kurz und ohne Zeilenumbrüche/Markdown?
-                const isShort = n.text.length < 40 && !n.text.includes('\n') && !n.text.includes('###') && !n.text.includes('- ');
-
-                // Klassen vergeben
-                card.className = `note-item ${n.pinned ? 'pinned' : ''} ${isShort ? 'compact' : ''}`;
-
-                if (isShort) {
-                    // Kompakt: Text links, Buttons rechts (kein Datum, keine Trennlinie via CSS)
-                    card.innerHTML = `
-            <div class="note-text">${renderedContent}</div>
-            <div class="action-btns">
-                <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern"><span class="mirror-icon">✏️</span></button>
-                <button class="icon-btn" onclick="togglePin(${n.id})" title="${n.pinned ? 'Pin lösen' : 'Anpinnen'}">${n.pinned ? '📍' : '📌'}</button>
-                <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
-            </div>
-        `;
-                } else {
-                    // Normal: Header mit Datum & Buttons oben, Text darunter
-                    const dateStr = new Date(n.id);
-                    // Formatierung: YYYY-MM-DD
-                    const datePart = dateStr.getFullYear() + '-' +
-                        String(dateStr.getMonth() + 1).padStart(2, '0') + '-' +
-                        String(dateStr.getDate()).padStart(2, '0');
-                    const timePart = String(dateStr.getHours()).padStart(2, '0') + ':' +
-                        String(dateStr.getMinutes()).padStart(2, '0');
-
-                    card.innerHTML = `
-            <div class="note-actions">
-                <div class="note-date">${datePart}<br>${timePart}</div>
-                <div class="action-btns">
-                    <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern"><span class="mirror-icon">✏️</span></button>
-                <button class="icon-btn" onclick="togglePin(${n.id})" title="${n.pinned ? 'Pin lösen' : 'Anpinnen'}">${n.pinned ? '📍' : '📌'}</button>
-                <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
-                </div>
-            </div>
-            <div class="note-text">${renderedContent}</div>
-        `;
-                }
-
-                list.appendChild(card);
-            });
-        }
-
-        // --- 5. MARKDOWN & EDITING ---
-        function parseMarkdown(text, noteId) {
-            let safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-            let rendered = safe
-                .replace(/^### (.*$)/gm, '<h3>$1</h3>')
-                .replace(/^&gt; (.*$)/gm, '<blockquote>$1</blockquote>')
-                .replace(/^---$/gm, '<hr>')
-                // Checkboxen mit Funktionalität
-                .replace(/^- \[ \]\s(.*)/gm, (match, p1) => {
-                    return `<div class="todo-item"><input type="checkbox" onclick="toggleTodo(${noteId}, '${p1.replace(/'/g, "\\'")}', false)"> ${p1}</div>`;
-                })
-                .replace(/^- \[x\]\s(.*)/gm, (match, p1) => {
-                    return `<div class="todo-item done"><input type="checkbox" checked onclick="toggleTodo(${noteId}, '${p1.replace(/'/g, "\\'")}', true)"> <del>${p1}</del></div>`;
-                })
-                .replace(/^- (?!\[)(.*)/gm, '<div class="list-item">• $1</div>')
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                .replace(/~~(.*?)~~/g, '<del>$1</del>');
-
-            rendered = rendered.replace(/(<\/h3>|<\/blockquote>|<hr>|<\/div>)\n/g, '$1');
-            return rendered.replace(/\n/g, '<br>');
         }
 
         function insertMarkdown(type) {
@@ -1194,12 +1098,169 @@
             textarea.setSelectionRange(newCursorPos, newCursorPos);
         }
 
-        function toggleTodo(id, todoText, isDone) {
+        // --- 5. NOTIZ-DARSTELLUNG ---
+
+        function renderNotes(searchQuery = '') {
+            const list = document.getElementById('noteList');
+            let notes = JSON.parse(localStorage.getItem('notes')) || [];
+
+            // Sortiermodus Anzeige: chronologisch oder alphabetisch
+            const sortMode = localStorage.getItem('sort_mode') || 'date';
+            document.getElementById('sortToggle').innerText = sortMode === 'alpha' ? '🔤' : '↕️';
+
+            // Sichtbarkeit von Buttons (Suche, Sortierung) und Suchfeld erst ab 5 Notizen
+            const toolsVisible = notes.length >= 5;
+            const searchBar = document.getElementById('searchBar');
+            const listHeader = document.getElementById('listHeader');
+            const searchBtn = document.getElementById('searchToggle');
+            const sortBtn = document.getElementById('sortToggle');
+            const userPrefActive = localStorage.getItem('search_active') === 'true';
+
+            // Buttons (Suche/Sortierung) nur anzeigen, wenn genug Notizen vorhanden sind
+            if (searchBtn) searchBtn.style.display = toolsVisible ? 'flex' : 'none';
+            if (sortBtn) sortBtn.style.display = toolsVisible ? 'flex' : 'none';
+            // Suchleiste nur anzeigen, wenn (genug Notizen da sind) UND (der User sie aktiv eingeschaltet hat)
+            if (searchBar) {
+                searchBar.style.display = (toolsVisible && userPrefActive) ? 'block' : 'none';
+            }
+            // Header nur anzeigen, wenn min. eine Notizen erstellt wurden
+            // aber auch wenn gerade keine Notiz angezeigt wird während des Suchmodus
+            if (listHeader) {
+                listHeader.style.display = (notes.length > 0 || searchQuery) ? 'flex' : 'none';
+            }
+
+            // In Notizen suchen und nur Notizen mit Suchbegriff anzeigen
+            if (searchQuery) {
+                const q = searchQuery.toLowerCase();
+                notes = notes.filter(n => n.text.toLowerCase().includes(q));
+            }
+            // Falls keine Notizen mit Suchbegriff (leere Anzeigeliste)
+            if (notes.length === 0) { // Hinweis anzeigen
+                list.innerHTML = searchQuery ? '<p style="text-align:center; margin-top: 30px; opacity:0.5;">Keine Treffer gefunden.</p>' : '';
+                return;
+            }
+
+            // Sortierung der Notizen
+            notes.sort((a, b) => {
+                if (a.pinned && !b.pinned) return -1;
+                if (!a.pinned && b.pinned) return 1;
+
+                if (sortMode === 'alpha') {
+                    // Entfernt Markdown-Sonderzeichen am Zeilenanfang für korrekte alphabetische Sortierung
+                    const cleanForSort = (str) => {
+                        return str.toLowerCase()
+                            .replace(/^###\s+/, '')         // Überschrift entfernen
+                            .replace(/^>\s+/, '')           // Zitat-Zeichen entfernen
+                            .replace(/^-\s+/, '')           // Listen-Strich entfernen
+                            .replace(/^-\s\[\s\]\s+/, '')   // Checkbox offen entfernen
+                            .replace(/^-\s\[x\]\s+/, '')    // Checkbox erledigt entfernen
+                            .replace(/^\*\*/, '')           // Fett-Start entfernen
+                            .trim();                        // Leerzeichen am Anfang und Ende des Strings entfernen
+                    };
+
+                    const textA = cleanForSort(a.text);
+                    const textB = cleanForSort(b.text);
+
+                    return textA.localeCompare(textB);
+                }
+
+                return b.created - a.created;
+            });
+
+            // Notizliste leeren
+            list.innerHTML = '';
+
+            // Notizenansicht erstellen und in die Liste
+            notes.forEach(n => {
+
+                const renderedContent = parseMarkdown(n.text, n.id);
+                const card = document.createElement('div');
+
+                // Ist die Notiz kurz und ohne Zeilenumbrüche/Markdown?
+                const isShort = n.text.length < 40 && !n.text.includes('\n') && !n.text.includes('###') && !n.text.includes('- ');
+
+                // Klassen vergeben - Aussehen zuweisen
+                card.className = `note-item ${n.pinned ? 'pinned' : ''} ${isShort ? 'compact' : ''}`;
+
+                if (isShort) {
+                    // Kompaktansicht: Text links, Buttons rechts (kein Datum, keine Trennlinie via CSS)
+                    card.innerHTML = `
+                        <div class="note-text">${renderedContent}</div>
+                        <div class="action-btns">
+                            <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern"><span class="mirror-icon">✏️</span></button>
+                            <button class="icon-btn" onclick="toggleNotePin(${n.id})" title="${n.pinned ? 'Pin lösen' : 'Anpinnen'}">${n.pinned ? '📍' : '📌'}</button>
+                            <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
+                        </div>
+                    `;
+                } else {
+                    const dateStr = new Date(n.id);
+                    // Datums-Formatierung: YYYY-MM-DD
+                    const datePart = dateStr.getFullYear() + '-' +
+                        String(dateStr.getMonth() + 1).padStart(2, '0') + '-' +
+                        String(dateStr.getDate()).padStart(2, '0');
+                    const timePart = String(dateStr.getHours()).padStart(2, '0') + ':' +
+                        String(dateStr.getMinutes()).padStart(2, '0');
+
+                    // // Normalansicht: Header mit Datum & Buttons, Text darunter
+                    card.innerHTML = `
+                        <div class="note-actions">
+                            <div class="note-date">${datePart}<br>${timePart}</div>
+                            <div class="action-btns">
+                                <button class="icon-btn" onclick="editNote(${n.id})" title="Ändern"><span class="mirror-icon">✏️</span></button>
+                            <button class="icon-btn" onclick="toggleNotePin(${n.id})" title="${n.pinned ? 'Pin lösen' : 'Anpinnen'}">${n.pinned ? '📍' : '📌'}</button>
+                            <button class="icon-btn" onclick="deleteNote(${n.id})" title="Löschen">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="note-text">${renderedContent}</div>
+                    `;
+                }
+                // Notiz wieder in die Notizliste hinzufügen
+                list.appendChild(card);
+            });
+        }
+
+        function parseMarkdown(text, noteId) {
+            let safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+            let rendered = safe
+                .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+                .replace(/^&gt; (.*$)/gm, '<blockquote>$1</blockquote>')
+                .replace(/^---$/gm, '<hr>')
+                // Checkboxen mit Funktionalität
+                .replace(/^- \[ \]\s(.*)/gm, (match, p1) => {
+                    return `<div class="todo-item"><input type="checkbox" onclick="toggleTodo(${noteId}, '${p1.replace(/'/g, "\\'")}', false)"> ${p1}</div>`;
+                })
+                .replace(/^- \[x\]\s(.*)/gm, (match, p1) => {
+                    return `<div class="todo-item done"><input type="checkbox" checked onclick="toggleTodo(${noteId}, '${p1.replace(/'/g, "\\'")}', true)"> <del>${p1}</del></div>`;
+                })
+                .replace(/^- (?!\[)(.*)/gm, '<div class="list-item">• $1</div>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/~~(.*?)~~/g, '<del>$1</del>');
+
+            rendered = rendered.replace(/(<\/h3>|<\/blockquote>|<hr>|<\/div>)\n/g, '$1');
+            return rendered.replace(/\n/g, '<br>');
+        }
+
+
+        // --- 6. NOTIZLISTE (Sonderfunktionen) ---
+
+        function toggleNotePin(id) { // Notiz anpinnen
+            let notes = JSON.parse(localStorage.getItem('notes')) || [];
+            notes = notes.map(n => {
+                if (n.id === id) n.pinned = !n.pinned;
+                return n;
+            });
+            localStorage.setItem('notes', JSON.stringify(notes));
+            renderNotes();
+        }
+
+        function toggleTodo(id, todoText, isDone) { // Checklisteneinträge von Notizen (ohne note edit) bearbeiten
             let notes = JSON.parse(localStorage.getItem('notes')) || [];
             let note = notes.find(n => n.id === id);
 
             if (note) {
-                // 1. Wir müssen die HTML-Entities zurückwandeln, falls Sonderzeichen im Text sind
+                // 1. HTML-Entities zurückwandeln, falls Sonderzeichen im Text sind
                 // (z.B. aus &amp; wird wieder &), damit der Text im localStorage gefunden wird.
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = todoText;
@@ -1210,7 +1271,7 @@
                 const newStatus = isDone ? '- [ ]' : '- [x]';
 
                 // 3. Den Text im Objekt ersetzen
-                // Wir suchen exakt nach der Kombination aus Status-Präfix und dem dekodierten Text
+                // Suchen nach der Kombination aus Status-Präfix und dem dekodierten Text
                 const searchString = `${oldStatus} ${decodedTodoText}`;
                 const replacementString = `${newStatus} ${decodedTodoText}`;
 
@@ -1226,30 +1287,32 @@
             }
         }
 
-        // --- 6. SUCHE, SORTIERUNG & SCRATCHPAD ---
+
+        // --- 7. SUCHE, SORTIERUNG & SCRATCHPAD ---
+
         function handleSearch(restore = false) {
             const bar = document.getElementById('searchBar');
             const input = document.getElementById('searchInput');
 
             if (restore) {
                 const wasActive = localStorage.getItem('search_active') === 'true';
-                // Beim Laden initialisieren wir nur den State, renderNotes regelt den Rest
+                // Beim Laden nur den State initialisieren, renderNotes() regelt den Rest
                 if (bar) bar.style.display = wasActive ? 'block' : 'none';
                 return;
             }
 
-            // Aktuellen Zustand prüfen (wir schauen in den LocalStorage oder direkt aufs Style)
+            // Aktuellen Zustand prüfen (sichtbar?)
             const isCurrentlyVisible = bar && bar.style.display !== 'none';
 
             if (isCurrentlyVisible) {
-                // ZUMACHEN
+                // Ausblenden
                 localStorage.setItem('search_active', 'false');
                 clearSearchField(false); // Leert Input und ruft renderNotes() auf -> blendet aus
             } else {
-                // AUFMACHEN
+                // Einblenden
                 localStorage.setItem('search_active', 'true');
-                renderNotes(); // Zeigt die Bar an (weil jetzt true im Speicher steht)
-                setTimeout(() => input.focus(), 50);
+                renderNotes();
+                setTimeout(() => input.focus(), 50); // Focus ins Suchfeld
             }
         }
 
@@ -1258,13 +1321,14 @@
             if (!input) return;
 
             input.value = '';
-            // handleSearchInput blendet das "X" aus und ruft renderNotes() auf
+            // handleSearchInput() blendet das "X" aus und ruft renderNotes() auf
             handleSearchInput();
 
             if (shouldFocus) {
                 input.focus();
             }
         }
+
         function handleSearchInput() {
             const val = document.getElementById('searchInput').value;
             document.getElementById('clearSearch').style.display = val ? 'block' : 'none';
@@ -1272,12 +1336,14 @@
         }
 
         function toggleSortMode() {
-            let currentMode = localStorage.getItem('sort_mode') || 'manual';
-            localStorage.setItem('sort_mode', currentMode === 'alpha' ? 'manual' : 'alpha');
+            let currentMode = localStorage.getItem('sort_mode') || 'date';
+            localStorage.setItem('sort_mode', currentMode === 'alpha' ? 'date' : 'alpha');
             renderNotes();
         }
 
-        // --- 7. SCRATCHPAD ---
+
+        // --- 8. SCRATCHPAD ---
+
         function saveScratchpad() {
             localStorage.setItem('scratchpad', document.getElementById('scratchpadInput').value);
         }
@@ -1299,7 +1365,7 @@
             }
         }
 
-        // --- 8. DATA SYNC & TOAST ---
+        // --- 9. DATA SYNC & TOAST ---
         function showToast(message, actionText = null, actionFn = null, secondaryText = null, secondaryFn = null) {
             const toast = document.getElementById('appToast');
             const textSpan = document.getElementById('toastText');
@@ -1318,14 +1384,14 @@
                 toast.appendChild(progressBar);
             }
 
-            // Update-Banner Schutz (OK-Toast blockiert Info, aber nicht Löschen)
             if (toast.classList.contains('show') && btnContainer.classList.contains('is-persistent') && !actionText && !message.includes('gelöscht')) return;
 
             clearTimeout(toastTimeout);
 
-            // HTML-Tags Erkennung
+            // HTML-Tags Erkennung im Toast Text
             const htmlTags = ['<span', '<div', '<br', '<small', '<b', '<strong', '<hr', '<p'];
             const isHTML = htmlTags.some(tag => message.toLowerCase().includes(tag));
+
             // Ausgabetextformat richtig setzen
             if (isHTML) textSpan.innerHTML = message;
             else textSpan.innerText = message;
@@ -1337,7 +1403,7 @@
             progressBar.style.transition = 'none';
             progressBar.style.transform = 'scaleX(1)';
 
-            // Buttons bauen
+            // Buttons erstellen, actionText = buttonText
             if (actionText) {
                 btnContainer.classList.add('is-persistent');
                 const b1 = document.createElement('button');
@@ -1350,8 +1416,9 @@
                     hideToast();
                 };
 
-                btnContainer.appendChild(b1);
+                btnContainer.appendChild(b1); // Button 1 hinzufügen
 
+                // Zweiten Button erstellen, secondaryText = buttonText
                 if (secondaryText) {
                     const b2 = document.createElement('button');
                     b2.className = 'toast-btn';
@@ -1366,18 +1433,21 @@
                         hideToast();
                     };
 
-                    btnContainer.appendChild(b2);
+                    btnContainer.appendChild(b2); // Button 2 hinzufügen
                 }
             }
 
             toast.classList.add('show');
 
-            // Timer Logik (Import & Update bleiben persistent)
+            // Toast Timer Logik
+            // Wenn Button 1 Text = OK, kein Timer, persistent
+            // gilt auch wenn 2 Buttons irgendeinen Text haben
             const isPersistent = (actionText === "OK") || (actionText && secondaryText);
+            // Wenn Button 1 null oder Text nicht "OK", Timer für Toastanzeige
             if (!isPersistent) {
-                const duration = actionText ? 8000 : 4000;
+                const duration = actionText ? 8000 : 4000; // 8 Sekunden Zeit, wenn Button 1 Text nicht null, ansonsten 4 Sekunden Toast Anzeige
                 progressBar.style.display = 'block';
-                setTimeout(() => {
+                setTimeout(() => { // Timer Ablaufbalken
                     progressBar.style.transition = `transform ${duration}ms linear`;
                     progressBar.style.transform = 'scaleX(0)';
                 }, 10);
@@ -1488,7 +1558,7 @@
 
                     } catch (err) {
                         console.error(err);
-                        showToast("❌ Fehler beim Import!", "Huch");
+                        showToast("❌ Fehler beim Import!");
                     }
                 };
                 reader.readAsText(e.target.files[0]);
@@ -1498,22 +1568,32 @@
 
         function restoreLastBackup() {
             const backup = localStorage.getItem('notes_backup_before_import');
+
             if (!backup) {
                 showToast("❌ Kein Backup zum Wiederherstellen gefunden.");
                 return;
             }
 
-            if (confirm("Möchtest du den Stand vor dem letzten Import wiederherstellen? Aktuelle Änderungen gehen verloren.")) {
-                localStorage.setItem('notes', backup);
-                renderNotes();
-                showToast("✅ Stand wiederhergestellt.");
-            }
+            showToast(
+                "Stand vor dem letzten Import wiederherstellen?",
+                {
+                    actionText: "Wiederherstellen",
+                    secondaryText: "Abbrechen",
+                    onAction: () => {
+                        localStorage.setItem('notes', backup);
+                        renderNotes();
+                        showToast("✅ Stand wiederhergestellt.");
+                    }
+                }
+            );
         }
 
+
         // --- 10. ENTWICKLER-MODUS (DEV-MENU) ---
+
         const DEV_HASH = "6c237681e70921603a306be9a1a5d9833fce5c1e268f52b1650970eaad0dce21";
 
-        // Hilfsfunktion zum Erstellen eines SHA-256 Hashes
+        // Hilfsfunktion zum Wandeln eines SHA-256 Hashes
         async function sha256(message) {
             const msgBuffer = new TextEncoder().encode(message);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -1526,7 +1606,7 @@
         let devClickTimer = null;
         let isConsoleUnlocked = false;
 
-        // --- Zentrale Steuerung (Öffnen & Zähler) ---
+        // --- Zentrale Steuerung ---
         function handleDevAccess(isShortcut = false) {
             const devMenu = document.getElementById('devMenu');
             if (!devMenu) return;
@@ -1604,6 +1684,7 @@
             showToast("Konsole entsperrt.");
         }
 
+        // --- Konsolen Eingaben ---
         async function handleConsole(event) {
             if (event.key === 'Enter') {
                 const input = event.target;
@@ -1637,6 +1718,7 @@
             }
         }
 
+        // --- Konsolen Befehle ---
         function executeCommand(cmd) {
             // Falls Befehle Argumente bräuchten, könnte man hier cmd.split(' ') nutzen
             switch (cmd) {
@@ -1644,7 +1726,7 @@
                 case 'nord': // Easter Egg Theme
                 case 'dark':
                 case 'light':
-                case 'lights':
+                case 'snoopy':
                     setTheme(cmd);
                     showToast(`${cmd.charAt(0).toUpperCase() + cmd.slice(1)} Theme aktiviert`);
                     return true;
@@ -1652,6 +1734,8 @@
                 // --- SYSTEM ---
                 case 'help': return cmdHelp();
                 case 'logs': return cmdLogs();
+                case 'stats': return cmdStats();
+                case 'storage': return cmdStorage();
                 case 'reset': return cmdReset();
                 case 'lock': lockConsole(); showToast("Konsole gesperrt"); return true;
 
@@ -1663,12 +1747,10 @@
 
                 // --- EASTER EGG ---
                 case 'matrix': return cmdMatrix();
+                case 'toast': return cmdToast();
 
                 // --- NEU ---
-                case 'storage': return cmdStorage();
                 case 'godmode': return cmdGodMode();
-                case 'toast': return cmdToast();
-                case 'stats': return cmdStats();
 
                 default:
                     showToast("Unbekannter Befehl: " + cmd);
@@ -1898,7 +1980,7 @@
 
         function showLastChangelog() {
             const msg = CHANGELOG[APP_VERSION] || "Neue Updates verfügbar!";
-            showToast(`<span class="toast-title">Update ${APP_VERSION}</span><hr class="toast-divider">${msg}`, "GEEHRT");
+            showToast(`<span class="toast-title">Update ${APP_VERSION}</span><hr class="toast-divider">${msg}`, "ZURÜCK");
         }
 
         async function forceUpdateApp() {
