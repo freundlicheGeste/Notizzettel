@@ -32,7 +32,7 @@
       "short_name": "Schmierzettel",
       "description": "Direkt zum Schmierzettel",
       "url": "./index.html?mode=scratchpad",
-      "icons": [{ "src": "miniSalary.png", "sizes": "192x192" }]
+      "icons": [{ "src": "miniScratchpad.png", "sizes": "192x192" }]
     },
   {
     "name": "Entwickler-Modus",
