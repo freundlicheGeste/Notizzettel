@@ -31,7 +31,7 @@
             /* (*1,5 .dev-menu-container, .toast, container) (/2 .note-text blockquote)*/
         }
 
-        [data-theme="lightSpecial"] {
+        [data-theme="lights"] {
             --card-highlight: #fff;
         }
 
@@ -1644,7 +1644,7 @@
                 case 'nord': // Easter Egg Theme
                 case 'dark':
                 case 'light':
-                case 'lightSpecial':
+                case 'lights':
                     setTheme(cmd);
                     showToast(`${cmd.charAt(0).toUpperCase() + cmd.slice(1)} Theme aktiviert`);
                     return true;
