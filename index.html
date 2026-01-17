@@ -2,6 +2,7 @@
 <html lang="de">
 
 <head>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -12,6 +13,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notiz-Zettel</title>
     <style>
+        /* Schriftart lokal einbinden */
+        @font-face {
+            font-family: 'PoppinsCustom';
+            /* Pfad anpassen, falls die Datei in einem Unterordner liegt */
+            src: url('Poppins-Black.ttf') format('truetype');
+            font-weight: 800;
+            font-style: normal;
+        }
+
         /* 1. VARIABLEN & THEMES */
         :root {
             --bg-color: #f4f4f9;
@@ -222,20 +232,21 @@
         }
 
         h2 {
-            font-size: 1.25em;
+            font-size: 1.6em;
         }
 
         h3 {
-            font-size: 1.1em;
+            font-size: 1.2em;
         }
 
         /* 2. SNOOPY-SPEZIAL-LOOK (Nur wenn data-theme="snoopy") */
         [data-theme="snoopy"] h2,
         [data-theme="snoopy"] h3 {
-            font-family: "Segoe UI", "Avenir Next", Roboto, sans-serif;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-family: 'PoppinsCustom', sans-serif !important;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+            /*font-family: "Segoe UI", "Avenir Next", Roboto, sans-serif;*/
         }
 
         [data-theme="snoopy"] h2 {
@@ -971,6 +982,10 @@
                 // Klasse von jeder Notiz entfernen
                 allNoteCards.forEach(card => card.classList.remove('theme-note-bg'));
             }
+
+            // WICHTIG: Die Liste neu zeichnen, damit die isSnoopy-Abfrage 
+            // innerhalb von renderNotes() für jede Karte neu ausgeführt wird.
+            renderNotes(document.getElementById('searchBar')?.value || '');
         }
         // --- 0. TESTBEREICH ---
         //-----------------------------------------------------------------------
